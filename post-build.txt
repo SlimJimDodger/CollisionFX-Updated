@@ -1,0 +1,15 @@
+$(ProjectDir)..\..\..\..\pdb2mdb\pdb2mdb.exe $(TargetPath)
+if not exist "$(ProjectDir)..\..\..\..\GameData\CollisionFX" mkdir "$(ProjectDir)..\..\..\..\GameData\CollisionFX\"
+if not exist "$(ProjectDir)..\..\..\..\GameData\CollisionFX\Plugins" mkdir "$(ProjectDir)..\..\..\..\GameData\CollisionFX\Plugins\"
+copy /y $(TargetDir)CollisionFX* $(ProjectDir)..\..\..\..\GameData\CollisionFX\Plugins 
+
+#copy /y $(ProjectDir)settings.cfg $(ProjectDir)..\..\..\GameData\CollisionFX\
+#copy /y $(ProjectDir)..\LICENSE.md $(ProjectDir)..\..\..\GameData\CollisionFX\
+#copy /y $(ProjectDir)..\UNLICENSE $(ProjectDir)..\..\..\GameData\CollisionFX\
+#copy /y $(ProjectDir)..\README.md $(ProjectDir)..\..\..\GameData\CollisionFX\
+#copy /y $(ProjectDir)..\CHANGES.txt $(ProjectDir)..\..\..\GameData\CollisionFX\
+#copy /y $(ProjectDir)CollisionFX.version $(ProjectDir)..\..\..\GameData\CollisionFX\
+
+#if not exist "$(ProjectDir)..\..\..\..\GameData\CollisionFX\Log" mkdir "$(ProjectDir)..\..\..\GameData\CollisionFX\Log"
+
+#xcopy /E /I /y "$(ProjectDir)..\..\..\GameData" "$(ProjectDir)..\..\GameData"

@@ -1,0 +1,38 @@
+# Generic ignore patterns
+*~
+*.o
+*.a
+*.moc
+.git
+
+# Logs etc.
+**/*.log
+
+# Windows project stuff
+**/bin
+**/obj
+**/*.suo
+*.cache
+.vs
+
+# Monodevelop project stuff
+**/*.userprefs
+**/*.pidb
+
+# Windows runtime
+*.exe
+*.ilk
+*.pdb
+*.msi
+
+# Windows clutter
+*.db
+
+# No need to distribute KSP binaries
+Assembly-CSharp.dll
+Assembly-CSharp-firstpass.dll
+UnityEngine.dll
+mscorlib.dll
+**/*.dll
+**/3rd party binaries
+/Releases
