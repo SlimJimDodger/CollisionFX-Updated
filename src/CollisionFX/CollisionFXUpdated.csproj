@@ -45,7 +45,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CollisionFX.cs" />
+    <Compile Include="CollisionFXUpdated.cs" />
     <Compile Include="ColourManager.cs" />
     <Compile Include="EvaWatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

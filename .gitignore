@@ -7,6 +7,7 @@
 
 # Logs etc.
 **/*.log
+**/*.zip
 
 # Windows project stuff
 **/bin
@@ -36,3 +37,4 @@ mscorlib.dll
 **/*.dll
 **/3rd party binaries
 /Releases
+GameData/*
