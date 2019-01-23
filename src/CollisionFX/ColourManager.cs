@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
 
-namespace CollisionFX
+namespace CollisionFXUpdated
 {
     public static class ColourManager
     {

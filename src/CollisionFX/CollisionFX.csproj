@@ -8,8 +8,8 @@
     <ProjectGuid>{0FF042CC-461D-4D41-8FBE-56C8A17C510A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CollisionFX</RootNamespace>
-    <AssemblyName>CollisionFX</AssemblyName>
+    <RootNamespace>CollisionFXUpdated</RootNamespace>
+    <AssemblyName>CollisionFXUpdated</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -48,6 +48,10 @@
     <Compile Include="EvaWatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CollisionFX-Updated.version" />
+    <None Include="ModuleManager_CollisionFX.cfg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

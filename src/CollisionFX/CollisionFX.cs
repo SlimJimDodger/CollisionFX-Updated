@@ -20,7 +20,7 @@ using ModuleWheels;
  * body dust jets for engines.
  **********************************************************/
 
-namespace CollisionFX
+namespace CollisionFXUpdated
 {
 	public class CollisionFX : PartModule
 	{

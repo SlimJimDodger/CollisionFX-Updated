@@ -2,7 +2,7 @@
 using UnityEngine;
 using System.Globalization;
 
-namespace CollisionFX
+namespace CollisionFXUpdated
 {
     public static class Utils
     {

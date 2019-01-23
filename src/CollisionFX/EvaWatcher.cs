@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace CollisionFX
+namespace CollisionFXUpdated
 {
     [KSPAddon(KSPAddon.Startup.Flight, false)]
     class EvaWatcher : MonoBehaviour
