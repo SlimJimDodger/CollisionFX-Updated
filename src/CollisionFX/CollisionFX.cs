@@ -744,7 +744,7 @@ namespace CollisionFXUpdated
 						sparkMain.startLifetime = ConvertToMinMaxCurve(0f, speed / 10);     // Values determined
 																												  //sparkFxParticleEmitter.maxEmission = Mathf.Clamp((speed * 2), 0, 75);   // via experimentation.
 						sparkEmission.rateOverTime = ConvertToMinMaxCurve(0f, Mathf.Clamp((speed * 2), 0, 75));
-						sparkFxParticleEmitter.Emit(2500);
+						sparkFxParticleEmitter.Emit(10 * (int)speed);
 						var velOverLifetime = sparkFxParticleEmitter.velocityOverLifetime;
 						//sparkFxParticleEmitter.worldVelocity = -part.Rigidbody.velocity;
 
@@ -847,7 +847,7 @@ namespace CollisionFXUpdated
 					var colorOverLifetime = dustFxParticleEmitter.colorOverLifetime;
 					colorOverLifetime.enabled = true;
 					colorOverLifetime.color = new ParticleSystem.MinMaxGradient(grad);
-					dustFxParticleEmitter.Emit(1000);
+					dustFxParticleEmitter.Emit(150 * (int)speed);
 					//}
 				}
 			}
