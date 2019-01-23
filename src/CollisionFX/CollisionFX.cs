@@ -828,7 +828,7 @@ namespace CollisionFX
 			dustMain.startLifetime = ConvertToMinMaxCurve(0f, speed / 10);     // Values determined
 																									 //sparkFxParticleEmitter.maxEmission = Mathf.Clamp((speed * 2), 0, 75);   // via experimentation.
 			dustEmission.rateOverTime = ConvertToMinMaxCurve(0f, Mathf.Clamp((speed * 2), 0, 75));
-			dustFxParticleEmitter.Emit(5000);
+			
 			// Set dust biome colour.
 			if (dustAnimator != null)
 			{
@@ -839,6 +839,29 @@ namespace CollisionFX
 				colors[3] = c;
 				colors[4] = c;
 				dustAnimator.colorAnimation = colors;
+
+				Gradient grad = new Gradient();
+				grad.colorKeys = new GradientColorKey[]
+				{
+					new GradientColorKey(c, 0.0f),
+					new GradientColorKey(c, 0.25f),
+					new GradientColorKey(c, 0.5f),
+					new GradientColorKey(c, 0.75f),
+					new GradientColorKey(c, 1.0f)
+				};
+
+				grad.alphaKeys = new GradientAlphaKey[]
+				{
+					new GradientAlphaKey(c.a, 0.0f),
+					new GradientAlphaKey(c.a, 0.25f),
+					new GradientAlphaKey(c.a, 0.5f),
+					new GradientAlphaKey(c.a, 0.75f),
+					new GradientAlphaKey(c.a, 1.0f),
+				};
+				var colorOverLifetime = dustFxParticleEmitter.colorOverLifetime;
+				colorOverLifetime.enabled = true;
+				colorOverLifetime.color = new ParticleSystem.MinMaxGradient(grad);
+				dustFxParticleEmitter.Emit(5000);
 			}
 		}
 
