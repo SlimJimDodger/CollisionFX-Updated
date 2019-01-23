@@ -349,6 +349,8 @@ namespace CollisionFXUpdated
 
 				var sparkEmission = sparkFxParticleEmitter.emission;
 				sparkEmission.rateOverTime = ConvertToMinMaxCurve(0f, 0f);
+
+
 				// handle velocity
 				var SPARKvelOverLifetime = sparkFxParticleEmitter.velocityOverLifetime;
 				Vector3? xminVel = Vector3.zero; ;
