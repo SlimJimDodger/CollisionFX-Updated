@@ -24,7 +24,7 @@ namespace CollisionFXUpdated
 {
 	public class CollisionFX : PartModule
 	{
-		public static string ConfigPath = "GameData/CollisionFX/settings.cfg";
+		public static string ConfigPath = "GameData/CollisionFXUpdated/settings.cfg";
 
 		[KSPField]
 		public float volume = 0.5f;
