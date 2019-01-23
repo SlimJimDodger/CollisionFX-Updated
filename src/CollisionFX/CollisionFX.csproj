@@ -34,12 +34,14 @@
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\..\..\..\..\Steam\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\..\..\..\..\Steam\steamapps\common\Kerbal Space Program\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -52,14 +54,25 @@
   <ItemGroup>
     <None Include="CollisionFX-Updated.version" />
     <None Include="ModuleManager_CollisionFX.cfg" />
+    <None Include="settings.cfg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>$(ProjectDir)..\..\..\pdb2mdb\pdb2mdb.exe $(TargetPath)
-if not exist "$(ProjectDir)..\..\..\GameData\CollisionFX" mkdir "$(ProjectDir)..\..\..\GameData\CollisionFX\"
-if not exist "$(ProjectDir)..\..\..\GameData\CollisionFX\Plugins" mkdir "$(ProjectDir)..\..\..\GameData\CollisionFX\Plugins\"
-copy /y $(TargetDir)CollisionFX* $(ProjectDir)..\..\..\GameData\CollisionFX\Plugins 
-</PostBuildEvent>
+if not exist "$(ProjectDir)..\..\..\GameData\CollisionFXUpdated" mkdir "$(ProjectDir)..\..\..\GameData\CollisionFXUpdated\"
+if not exist "$(ProjectDir)..\..\..\GameData\CollisionFXUpdated\Plugins" mkdir "$(ProjectDir)..\..\..\GameData\CollisionFXUpdated\Plugins\"
+if not exist "$(ProjectDir)..\..\..\GameData\CollisionFXUpdated\Sounds" mkdir "$(ProjectDir)..\..\..\GameData\CollisionFXUpdated\Sounds\"
+copy /y $(TargetDir)CollisionFX* $(ProjectDir)..\..\..\GameData\CollisionFXUpdated\Plugins 
+
+copy /y $(ProjectDir)settings.cfg $(ProjectDir)..\..\..\GameData\CollisionFXUpdated\
+copy /y $(ProjectDir)..\LICENSE $(ProjectDir)..\..\..\GameData\CollisionFXUpdated\
+copy /y $(ProjectDir)ModuleManager_CollisionFX.cfg $(ProjectDir)..\..\..\GameData\CollisionFXUpdated\
+copy /y $(ProjectDir)..\..\Readme_CollisionFX-Updated.txt $(ProjectDir)..\..\..\GameData\CollisionFXUpdated\
+copy /y $(ProjectDir)CollisionFX-Updated.version $(ProjectDir)..\..\..\GameData\CollisionFXUpdated\
+
+
+xcopy /E /I /y "$(ProjectDir)..\Sounds" "$(ProjectDir)..\..\..\GameData\CollisionFXUpdated\Sounds"
+xcopy /E /I /y "$(ProjectDir)..\..\..\GameData" "$(ProjectDir)..\..\GameData"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

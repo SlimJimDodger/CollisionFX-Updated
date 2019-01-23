@@ -1,0 +1,15 @@
+$(ProjectDir)..\..\..\pdb2mdb\pdb2mdb.exe $(TargetPath)
+if not exist "$(ProjectDir)..\..\..\GameData\CollisionFXUpdated" mkdir "$(ProjectDir)..\..\..\GameData\CollisionFXUpdated\"
+if not exist "$(ProjectDir)..\..\..\GameData\CollisionFXUpdated\Plugins" mkdir "$(ProjectDir)..\..\..\GameData\CollisionFXUpdated\Plugins\"
+if not exist "$(ProjectDir)..\..\..\GameData\CollisionFXUpdated\Sounds" mkdir "$(ProjectDir)..\..\..\GameData\CollisionFXUpdated\Sounds\"
+copy /y $(TargetDir)CollisionFX* $(ProjectDir)..\..\..\GameData\CollisionFXUpdated\Plugins 
+
+copy /y $(ProjectDir)settings.cfg $(ProjectDir)..\..\..\GameData\CollisionFXUpdated\
+copy /y $(ProjectDir)..\LICENSE $(ProjectDir)..\..\..\GameData\CollisionFXUpdated\
+copy /y $(ProjectDir)ModuleManager_CollisionFX.cfg $(ProjectDir)..\..\..\GameData\CollisionFXUpdated\
+copy /y $(ProjectDir)..\..\Readme_CollisionFX-Updated.txt $(ProjectDir)..\..\..\GameData\CollisionFXUpdated\
+copy /y $(ProjectDir)CollisionFX-Updated.version $(ProjectDir)..\..\..\GameData\CollisionFXUpdated\
+
+
+xcopy /E /I /y "$(ProjectDir)..\Sounds" "$(ProjectDir)..\..\..\GameData\CollisionFXUpdated\Sounds"
+xcopy /E /I /y "$(ProjectDir)..\..\..\GameData" "$(ProjectDir)..\..\GameData"
