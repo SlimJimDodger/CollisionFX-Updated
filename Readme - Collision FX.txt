@@ -1,4 +1,21 @@
 -------------------------------------------------------------
+ Collision FX-Updated 
+ Author:    SlimJimDodger
+ Version:   5.0a
+ Released:  2019-01-22
+ KSP:       v1.6.1
+
+ Thread:    http://forum.kerbalspaceprogram.com/
+ Licence:   GNU v2, http://www.gnu.org/licenses/gpl-2.0.html
+ Source:    https://github.com/SlimJimdDodger/CollisionFX-Updated
+-------------------------------------------------------------
+
+
+
+
+
+
+-------------------------------------------------------------
  Collision FX
  Author:    pizzaoverhead
  Version:   4.0
@@ -54,6 +71,11 @@ RoadNoise.wav - Modified from "Tires car without an engine." by petruchio_ru, av
 
 Version history
 ---------------
+5.0a (2019-01-09)
+- Convert ParticleEmitter's to ParticleSystem's
+- Rebuilt for KSP 1.4.++
+- Cross fingers
+
 4.0 (2017-03-09)
 - Rebuilt for KSP 1.2.2.
 
