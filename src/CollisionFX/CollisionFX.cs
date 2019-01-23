@@ -51,7 +51,7 @@ namespace CollisionFX
 
 		private GameObject dustFx;
 		private ParticleSystem dustFxParticleEmitter;
-		ParticleAnimator dustAnimator;
+		//ParticleAnimator dustAnimator;
 		//private GameObject fragmentFx;
 		//ParticleAnimator fragmentAnimator;
 		private ModuleWheelBase moduleWheel = null;
@@ -65,6 +65,9 @@ namespace CollisionFX
 		private Light scrapeLight;
 		private Color lightColor1 = new Color(254, 226, 160); // Tan / light orange
 		private Color lightColor2 = new Color(239, 117, 5); // Red-orange.
+
+		private bool wheelHasWeight;
+		private bool _paused = false;
 
 #if DEBUG
 		private GameObject[] spheres = new GameObject[4];
@@ -99,6 +102,7 @@ namespace CollisionFX
 				moduleWheelDamage = part.FindModuleImplementing<ModuleWheelDamage>();
 				moduleWheelDeployment = part.FindModuleImplementing<ModuleWheelDeployment>();
 				wheelCollider = moduleWheel.wheelColliderHost.GetComponent<WheelCollider>();
+				InvokeRepeating("checkLanding", 0f, 0.5f);
 			}
 
 			SetupAudio();
@@ -121,7 +125,6 @@ namespace CollisionFX
 #endif
 		}
 
-		private bool _paused = false;
 		private void OnPause()
 		{
 			_paused = true;
@@ -145,6 +148,7 @@ namespace CollisionFX
 			GameEvents.onGamePause.Remove(OnPause);
 			GameEvents.onGameUnpause.Remove(OnUnpause);
 			_paused = true;
+			CancelInvoke();
 		}
 
 		// Not called on parts where physicalSignificance = false. Check the parent part instead.
@@ -560,7 +564,27 @@ namespace CollisionFX
 
 		public void Update()
 		{
-			bool x = false;
+
+		}
+
+		public void checkLanding()
+		{
+
+			if (!HasUsableWheel())
+				return;
+
+			if (moduleWheel.isGrounded && !wheelHasWeight && part.vessel.srfSpeed > 10)
+			{
+
+				ImpactSounds(true);
+				WheelHit hit;
+				if (wheelCollider.GetGroundHit(out hit))
+				{
+					DustImpact((float)part.vessel.srfSpeed, hit.point, hit.collider.name);
+				}
+
+			}
+			wheelHasWeight = moduleWheel.isGrounded;
 		}
 
 		/// <summary>
@@ -790,19 +814,41 @@ namespace CollisionFX
 					dustMain.startLifetime = ConvertToMinMaxCurve(0f, speed / 10);     // Values determined
 																											 //sparkFxParticleEmitter.maxEmission = Mathf.Clamp((speed * 2), 0, 75);   // via experimentation.
 					dustEmission.rateOverTime = ConvertToMinMaxCurve(0f, Mathf.Clamp((speed * 2), 0, 75));
-					dustFxParticleEmitter.Emit(1000);
+
 					//dustFx.particleEmitter.worldVelocity = -part.Rigidbody.velocity;
 					// Set dust biome colour.
-					if (dustAnimator != null)
+					//if (dustAnimator != null)
+					//{
+					//	Color[] colors = dustAnimator.colorAnimation;
+					//	colors[0] = c;
+					//	colors[1] = c;
+					//	colors[2] = c;
+					//	colors[3] = c;
+					//	colors[4] = c;
+					//	dustAnimator.colorAnimation = colors;
+					Gradient grad = new Gradient();
+					grad.colorKeys = new GradientColorKey[]
 					{
-						Color[] colors = dustAnimator.colorAnimation;
-						colors[0] = c;
-						colors[1] = c;
-						colors[2] = c;
-						colors[3] = c;
-						colors[4] = c;
-						dustAnimator.colorAnimation = colors;
-					}
+					new GradientColorKey(c, 0.0f),
+					new GradientColorKey(c, 0.25f),
+					new GradientColorKey(c, 0.5f),
+					new GradientColorKey(c, 0.75f),
+					new GradientColorKey(c, 1.0f)
+					};
+
+					grad.alphaKeys = new GradientAlphaKey[]
+					{
+					new GradientAlphaKey(c.a, 0.0f),
+					new GradientAlphaKey(c.a, 0.25f),
+					new GradientAlphaKey(c.a, 0.5f),
+					new GradientAlphaKey(c.a, 0.75f),
+					new GradientAlphaKey(c.a, 1.0f),
+					};
+					var colorOverLifetime = dustFxParticleEmitter.colorOverLifetime;
+					colorOverLifetime.enabled = true;
+					colorOverLifetime.color = new ParticleSystem.MinMaxGradient(grad);
+					dustFxParticleEmitter.Emit(1000);
+					//}
 				}
 			}
 			else
@@ -828,41 +874,40 @@ namespace CollisionFX
 			dustMain.startLifetime = ConvertToMinMaxCurve(0f, speed / 10);     // Values determined
 																									 //sparkFxParticleEmitter.maxEmission = Mathf.Clamp((speed * 2), 0, 75);   // via experimentation.
 			dustEmission.rateOverTime = ConvertToMinMaxCurve(0f, Mathf.Clamp((speed * 2), 0, 75));
-			
-			// Set dust biome colour.
-			if (dustAnimator != null)
-			{
-				Color[] colors = dustAnimator.colorAnimation;
-				colors[0] = c;
-				colors[1] = c;
-				colors[2] = c;
-				colors[3] = c;
-				colors[4] = c;
-				dustAnimator.colorAnimation = colors;
 
-				Gradient grad = new Gradient();
-				grad.colorKeys = new GradientColorKey[]
-				{
+			// Set dust biome colour.
+			//if (dustAnimator != null)
+			//{
+			//	Color[] colors = dustAnimator.colorAnimation;
+			//	colors[0] = c;
+			//	colors[1] = c;
+			//	colors[2] = c;
+			//	colors[3] = c;
+			//	colors[4] = c;
+			//	dustAnimator.colorAnimation = colors;
+
+			Gradient grad = new Gradient();
+			grad.colorKeys = new GradientColorKey[]
+			{
 					new GradientColorKey(c, 0.0f),
 					new GradientColorKey(c, 0.25f),
 					new GradientColorKey(c, 0.5f),
 					new GradientColorKey(c, 0.75f),
 					new GradientColorKey(c, 1.0f)
-				};
+			};
 
-				grad.alphaKeys = new GradientAlphaKey[]
-				{
+			grad.alphaKeys = new GradientAlphaKey[]
+			{
 					new GradientAlphaKey(c.a, 0.0f),
 					new GradientAlphaKey(c.a, 0.25f),
 					new GradientAlphaKey(c.a, 0.5f),
 					new GradientAlphaKey(c.a, 0.75f),
 					new GradientAlphaKey(c.a, 1.0f),
-				};
-				var colorOverLifetime = dustFxParticleEmitter.colorOverLifetime;
-				colorOverLifetime.enabled = true;
-				colorOverLifetime.color = new ParticleSystem.MinMaxGradient(grad);
-				dustFxParticleEmitter.Emit(5000);
-			}
+			};
+			var colorOverLifetime = dustFxParticleEmitter.colorOverLifetime;
+			colorOverLifetime.enabled = true;
+			colorOverLifetime.color = new ParticleSystem.MinMaxGradient(grad);
+			dustFxParticleEmitter.Emit(5000);
 		}
 
 		private void ScrapeSound(FXGroup sound, float speed)
@@ -887,6 +932,7 @@ namespace CollisionFX
 				sound.audio.Stop();
 		}
 	}
+}
 
 //#if DEBUG
 //	[KSPAddon(KSPAddon.Startup.MainMenu, false)]
@@ -909,7 +955,7 @@ namespace CollisionFX
 //		}
 //	}
 //#endif
-}
+//}
 
 
 //ScreenMessages.PostScreenMessage("Collider: " + c.collider + "\ngameObject: " + c.gameObject + "\nrigidbody: " + c.Rigidbody + "\ntransform: " + c.transform);
