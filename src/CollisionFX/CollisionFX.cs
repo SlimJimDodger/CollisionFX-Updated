@@ -720,7 +720,7 @@ namespace CollisionFX
 						sparkMain.startLifetime = ConvertToMinMaxCurve(0f, speed / 10);     // Values determined
 																												  //sparkFxParticleEmitter.maxEmission = Mathf.Clamp((speed * 2), 0, 75);   // via experimentation.
 						sparkEmission.rateOverTime = ConvertToMinMaxCurve(0f, Mathf.Clamp((speed * 2), 0, 75));
-						sparkFxParticleEmitter.Emit(10000);
+						sparkFxParticleEmitter.Emit(2500);
 						var velOverLifetime = sparkFxParticleEmitter.velocityOverLifetime;
 						//sparkFxParticleEmitter.worldVelocity = -part.Rigidbody.velocity;
 
@@ -828,7 +828,7 @@ namespace CollisionFX
 			dustMain.startLifetime = ConvertToMinMaxCurve(0f, speed / 10);     // Values determined
 																									 //sparkFxParticleEmitter.maxEmission = Mathf.Clamp((speed * 2), 0, 75);   // via experimentation.
 			dustEmission.rateOverTime = ConvertToMinMaxCurve(0f, Mathf.Clamp((speed * 2), 0, 75));
-			dustFxParticleEmitter.Emit(10000);
+			dustFxParticleEmitter.Emit(5000);
 			// Set dust biome colour.
 			if (dustAnimator != null)
 			{
@@ -865,27 +865,27 @@ namespace CollisionFX
 		}
 	}
 
-#if DEBUG
-	[KSPAddon(KSPAddon.Startup.MainMenu, false)]
-	class AutoStartup : UnityEngine.MonoBehaviour
-	{
-		public static bool first = true;
-		public void Start()
-		{
-			//only do it on the first entry to the menu
-			if (first)
-			{
-				first = false;
-				HighLogic.SaveFolder = "test";
-				var game = GamePersistence.LoadGame("persistent", HighLogic.SaveFolder, true, false);
-				if (game != null && game.flightState != null && game.compatible)
-					FlightDriver.StartAndFocusVessel(game, game.flightState.activeVesselIdx);
-				CheatOptions.InfinitePropellant = true;
-				CheatOptions.InfiniteElectricity = true;
-			}
-		}
-	}
-#endif
+//#if DEBUG
+//	[KSPAddon(KSPAddon.Startup.MainMenu, false)]
+//	class AutoStartup : UnityEngine.MonoBehaviour
+//	{
+//		public static bool first = true;
+//		public void Start()
+//		{
+//			//only do it on the first entry to the menu
+//			if (first)
+//			{
+//				first = false;
+//				HighLogic.SaveFolder = "test";
+//				var game = GamePersistence.LoadGame("persistent", HighLogic.SaveFolder, true, false);
+//				if (game != null && game.flightState != null && game.compatible)
+//					FlightDriver.StartAndFocusVessel(game, game.flightState.activeVesselIdx);
+//				CheatOptions.InfinitePropellant = true;
+//				CheatOptions.InfiniteElectricity = true;
+//			}
+//		}
+//	}
+//#endif
 }
 
 
