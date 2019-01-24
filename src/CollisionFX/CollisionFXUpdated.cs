@@ -26,6 +26,8 @@ namespace CollisionFXUpdated
 	{
 		public static string ConfigPath = "GameData/CollisionFXUpdated/settings.cfg";
 
+#region KSPFields
+
 		[KSPField]
 		public float volume = 0.5f;
 		[KSPField]
@@ -43,12 +45,13 @@ namespace CollisionFXUpdated
 		[KSPField]
 		public float minScrapeSpeed = 1f;
 
+		#endregion
+
+
 		public float pitchRange = 0.3f;
 		public float scrapeFadeSpeed = 5f;
-
 		private GameObject sparkFx;
 		private ParticleSystem sparkFxParticleEmitter;
-
 		private GameObject dustFx;
 		private ParticleSystem dustFxParticleEmitter;
 		//ParticleAnimator dustAnimator;
@@ -244,105 +247,15 @@ namespace CollisionFXUpdated
 
 		#endregion Events
 
-		private Part GetCollidingPart(ContactPoint contactPoint)
-		{
-			GameObject searchObject = contactPoint.thisCollider.gameObject;
-			Part foundPart = null;
-			bool searchedOtherCollider = false;
-			while (searchObject != null)
-			{
-				foundPart = searchObject.GetComponent<Part>();
-				if (foundPart != null)
-					return foundPart;
-				searchObject = searchObject.transform == null ? null :
-					 searchObject.transform.parent == null ? null :
-					 searchObject.transform.parent.gameObject;
-				if (searchObject == null && !searchedOtherCollider) // "thisCollider" is sometimes the ground...
-				{
-					searchedOtherCollider = true;
-					searchObject = contactPoint.otherCollider.gameObject;
-				}
-			}
-			return null;
-		}
-
-		/// <summary>
-		/// This part has come into contact with something. Play an appropriate sound.
-		/// </summary>
-		public void ImpactSounds(bool isWheel)
-		{
-			if (isWheel && WheelImpactSound != null && WheelImpactSound.audio != null)
-			{
-				WheelImpactSound.audio.pitch = UnityEngine.Random.Range(1 - pitchRange, 1 + pitchRange);
-				WheelImpactSound.audio.Play();
-				if (BangSound != null && BangSound.audio != null)
-				{
-					BangSound.audio.Stop();
-				}
-			}
-			else
-			{
-				if (BangSound != null && BangSound.audio != null)
-				{
-					// Shift the pitch randomly each time so that the impacts don't all sound the same.
-					BangSound.audio.pitch = UnityEngine.Random.Range(1 - pitchRange, 1 + pitchRange);
-					BangSound.audio.Play();
-				}
-				if (WheelImpactSound != null && WheelImpactSound.audio != null)
-				{
-					WheelImpactSound.audio.Stop();
-				}
-			}
-		}
-
-		/*private string[] particleTypes = {
-														"fx_exhaustFlame_white_tiny",
-														"fx_exhaustFlame_yellow",
-														"fx_exhaustFlame_blue",
-														//"fx_exhaustLight_yellow",
-														"fx_exhaustLight_blue",
-														"fx_exhaustFlame_blue_small",
-														"fx_smokeTrail_light",
-														"fx_smokeTrail_medium",
-														"fx_smokeTrail_large",
-														"fx_smokeTrail_veryLarge",
-														"fx_smokeTrail_aeroSpike",
-														"fx_gasBurst_white",
-														"fx_gasJet_white",
-														"fx_SRB_large_emit",
-														"fx_SRB_large_emit2",
-														"fx_exhaustSparks_flameout",
-														"fx_exhaustSparks_flameout_2",
-														"fx_exhaustSparks_yellow",
-														"fx_shockExhaust_red_small", nope
-														"fx_shockExhaust_blue_small",
-														"fx_shockExhaust_blue",
-														"fx_LES_emit",
-														"fx_ksX_emit",
-														"fx_ks25_emit",
-														"fx_ks1_emit"
-													};*/
-
-		//int currentParticle = 0;
 		private void SetupParticles()
 		{
-			/*UnityEngine.Object o = null;
-			while (o == null)
-			{
-				 string name = "Effects/" + particleTypes[currentParticle];
-				 o = UnityEngine.Resources.Load(name);
-				 currentParticle++;
-				 if (currentParticle >= particleTypes.Length) currentParticle = 0;
-			}*/
-
-			//ScreenMessages.PostScreenMessage(particleTypes[currentParticle]);
 			if (scrapeSparks)
 			{
 				sparkFx = (GameObject)GameObject.Instantiate(UnityEngine.Resources.Load("Effects/fx_exhaustSparks_flameout"));
-				sparkFxParticleEmitter = sparkFx.GetComponent<ParticleSystem>();
 				sparkFx.transform.parent = part.transform;
 				sparkFx.transform.position = part.transform.position;
 
+				sparkFxParticleEmitter = sparkFx.GetComponent<ParticleSystem>();
 				var sparkMain = sparkFxParticleEmitter.main;
 				sparkMain.playOnAwake = false;
 				sparkMain.startLifetime = ConvertToMinMaxCurve(0f, 0f);
@@ -442,6 +355,88 @@ namespace CollisionFXUpdated
 			fragmentFx.particleEmitter.minEmission = 0;
 			fragmentAnimator = fragmentFx.particleEmitter.GetComponent<ParticleAnimator>();*/
 		}
+
+		private Part GetCollidingPart(ContactPoint contactPoint)
+		{
+			GameObject searchObject = contactPoint.thisCollider.gameObject;
+			Part foundPart = null;
+			bool searchedOtherCollider = false;
+			while (searchObject != null)
+			{
+				foundPart = searchObject.GetComponent<Part>();
+				if (foundPart != null)
+					return foundPart;
+				searchObject = searchObject.transform == null ? null :
+					 searchObject.transform.parent == null ? null :
+					 searchObject.transform.parent.gameObject;
+				if (searchObject == null && !searchedOtherCollider) // "thisCollider" is sometimes the ground...
+				{
+					searchedOtherCollider = true;
+					searchObject = contactPoint.otherCollider.gameObject;
+				}
+			}
+			return null;
+		}
+
+		/// <summary>
+		/// This part has come into contact with something. Play an appropriate sound.
+		/// </summary>
+		public void ImpactSounds(bool isWheel)
+		{
+			if (isWheel && WheelImpactSound != null && WheelImpactSound.audio != null)
+			{
+				WheelImpactSound.audio.pitch = UnityEngine.Random.Range(1 - pitchRange, 1 + pitchRange);
+				WheelImpactSound.audio.Play();
+				if (BangSound != null && BangSound.audio != null)
+				{
+					BangSound.audio.Stop();
+				}
+			}
+			else
+			{
+				if (BangSound != null && BangSound.audio != null)
+				{
+					// Shift the pitch randomly each time so that the impacts don't all sound the same.
+					BangSound.audio.pitch = UnityEngine.Random.Range(1 - pitchRange, 1 + pitchRange);
+					BangSound.audio.Play();
+				}
+				if (WheelImpactSound != null && WheelImpactSound.audio != null)
+				{
+					WheelImpactSound.audio.Stop();
+				}
+			}
+		}
+
+		/*private string[] particleTypes = {
+														"fx_exhaustFlame_white_tiny",
+														"fx_exhaustFlame_yellow",
+														"fx_exhaustFlame_blue",
+														//"fx_exhaustLight_yellow",
+														"fx_exhaustLight_blue",
+														"fx_exhaustFlame_blue_small",
+														"fx_smokeTrail_light",
+														"fx_smokeTrail_medium",
+														"fx_smokeTrail_large",
+														"fx_smokeTrail_veryLarge",
+														"fx_smokeTrail_aeroSpike",
+														"fx_gasBurst_white",
+														"fx_gasJet_white",
+														"fx_SRB_large_emit",
+														"fx_SRB_large_emit2",
+														"fx_exhaustSparks_flameout",
+														"fx_exhaustSparks_flameout_2",
+														"fx_exhaustSparks_yellow",
+														"fx_shockExhaust_red_small", nope
+														"fx_shockExhaust_blue_small",
+														"fx_shockExhaust_blue",
+														"fx_LES_emit",
+														"fx_ksX_emit",
+														"fx_ks25_emit",
+														"fx_ks1_emit"
+													};*/
+
+		//int currentParticle = 0;
+
 		static ParticleSystem.MinMaxCurve ConvertToMinMaxCurve(float min, float max)
 		{
 			if (Mathf.Approximately(min, max))
