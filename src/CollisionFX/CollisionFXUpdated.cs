@@ -26,7 +26,7 @@ namespace CollisionFXUpdated
 	{
 		public static string ConfigPath = "GameData/CollisionFXUpdated/settings.cfg";
 
-#region KSPFields
+		#region KSPFields
 
 		[KSPField]
 		public float volume = 0.5f;
@@ -47,10 +47,10 @@ namespace CollisionFXUpdated
 
 		#endregion
 
-
 		public float pitchRange = 0.3f;
 		public float scrapeFadeSpeed = 5f;
 		private GameObject sparkFx;
+		private GameObject _sparkFX;
 		private ParticleSystem sparkFxParticleEmitter;
 		private GameObject dustFx;
 		private ParticleSystem dustFxParticleEmitter;
@@ -71,6 +71,7 @@ namespace CollisionFXUpdated
 
 		private bool wheelHasWeight;
 		private bool _paused = false;
+		private SparkLauncher _sparklauncher = null;
 
 #if DEBUG
 		private GameObject[] spheres = new GameObject[4];
@@ -251,6 +252,7 @@ namespace CollisionFXUpdated
 		{
 			if (scrapeSparks)
 			{
+				#region sparks
 				sparkFx = (GameObject)GameObject.Instantiate(UnityEngine.Resources.Load("Effects/fx_exhaustSparks_flameout"));
 				sparkFx.transform.parent = part.transform;
 				sparkFx.transform.position = part.transform.position;
@@ -291,16 +293,16 @@ namespace CollisionFXUpdated
 					}
 				}
 			}
-			//sparkFxParticleEmitter.localVelocity = Vector3.zero;
-			//       sparkFxParticleEmitter.useWorldSpace = true;
-			//sparkFxParticleEmitter.emit = false;
-			// sparkFxParticleEmitter.minEnergy = 0;
-			//             sparkFxParticleEmitter.minEmission = 0;
+			_sparkFX = new GameObject("SparkFX");
+			//_sparkFX =  (GameObject)GameObject.Instantiate(UnityEngine.Resources.Load("Effects/fx_exhaustSparks_flameout"));
 
-			#region fix
-
+			_sparkFX.transform.parent = part.transform;
+			_sparkFX.transform.position = part.transform.position;
+			_sparklauncher = _sparkFX.AddComponent<SparkLauncher>();
 
 			#endregion
+
+
 
 			dustFx = (GameObject)GameObject.Instantiate(UnityEngine.Resources.Load("Effects/fx_smokeTrail_light"));
 			dustFxParticleEmitter = dustFx.GetComponent<ParticleSystem>();
@@ -537,27 +539,6 @@ namespace CollisionFXUpdated
 				WheelImpactSound.audio.volume = GameSettings.SHIP_VOLUME;
 			}
 		}
-
-		//public void DebugParticles(string colliderName, Vector3 contactPoint)
-		//{
-		//    Color c = ColourManager.GetDustColour(colliderName);
-		//    dustFx.transform.position = contactPoint;
-		//    dustFx.GetComponent<ParticleEmitter>().maxEnergy = 10;
-		//    dustFx.GetComponent<ParticleEmitter>().maxEmission = 75;
-		//    dustFx.GetComponent<ParticleEmitter>().Emit();
-		//    //dustFx.particleEmitter.worldVelocity = -part.Rigidbody.velocity;
-		//    // Set dust biome colour.
-		//    if (dustAnimator != null)
-		//    {
-		//        Color[] colors = dustAnimator.colorAnimation;
-		//        colors[0] = c;
-		//        colors[1] = c;
-		//        colors[2] = c;
-		//        colors[3] = c;
-		//        colors[4] = c;
-		//        dustAnimator.colorAnimation = colors;
-		//    }
-		//}
 
 		public void Update()
 		{
