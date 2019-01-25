@@ -44,6 +44,7 @@ namespace CollisionFXUpdated
 		/// <param name="contactPoint">The collision's contactPoint to be adjusted.</param>
 		/// <param name="part">The part involved in the collision</param>
 		/// <returns>The contact point, corrected for the current frame.</returns>
+		/// 
 		public static Vector3 PointToCurrentFrame(Vector3 contactPoint, Part part)
 		{
 			Part p = part;

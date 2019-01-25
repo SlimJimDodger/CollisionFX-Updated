@@ -43,7 +43,7 @@ namespace CollisionFXUpdated
 		[KSPField]
 		public float sparkLightIntensity = 0.05f;
 		[KSPField]
-		public float minScrapeSpeed = 1f;
+		public float minScrapeSpeed = 0.3f;
 
 		#endregion
 
@@ -252,57 +252,13 @@ namespace CollisionFXUpdated
 		{
 			if (scrapeSparks)
 			{
-				#region sparks
-				sparkFx = (GameObject)GameObject.Instantiate(UnityEngine.Resources.Load("Effects/fx_exhaustSparks_flameout"));
-				sparkFx.transform.parent = part.transform;
-				sparkFx.transform.position = part.transform.position;
+				_sparkFX = new GameObject("SparkFX");
+				_sparkFX =  (GameObject)GameObject.Instantiate(UnityEngine.Resources.Load("Effects/fx_exhaustSparks_flameout"));
 
-				sparkFxParticleEmitter = sparkFx.GetComponent<ParticleSystem>();
-				var sparkMain = sparkFxParticleEmitter.main;
-				sparkMain.playOnAwake = false;
-				sparkMain.startLifetime = ConvertToMinMaxCurve(0f, 0f);
-
-				var sparkEmission = sparkFxParticleEmitter.emission;
-				sparkEmission.rateOverTime = ConvertToMinMaxCurve(0f, 0f);
-
-
-				// handle velocity
-				var SPARKvelOverLifetime = sparkFxParticleEmitter.velocityOverLifetime;
-				Vector3? xminVel = Vector3.zero; ;
-				Vector3? xmaxVel = Vector3.zero; ;
-
-				SPARKvelOverLifetime.enabled = true;
-				SPARKvelOverLifetime.space = ParticleSystemSimulationSpace.World;
-
-				if (xminVel != null)
-				{
-					var xmin = xminVel.Value;
-					var xmax = xmaxVel.Value;
-					if (xmin == xmax)
-					{
-						SPARKvelOverLifetime.x = xmin.x;
-						SPARKvelOverLifetime.y = xmin.y;
-						SPARKvelOverLifetime.z = xmin.z;
-					}
-					else
-					{
-
-						SPARKvelOverLifetime.x = new ParticleSystem.MinMaxCurve(xmin.x, xmax.x);
-						SPARKvelOverLifetime.y = new ParticleSystem.MinMaxCurve(xmin.y, xmax.y);
-						SPARKvelOverLifetime.z = new ParticleSystem.MinMaxCurve(xmin.z, xmax.z);
-					}
-				}
+				_sparkFX.transform.parent = part.transform;
+				_sparkFX.transform.position = part.transform.position;
+				_sparklauncher = _sparkFX.AddComponent<SparkLauncher>();
 			}
-			_sparkFX = new GameObject("SparkFX");
-			//_sparkFX =  (GameObject)GameObject.Instantiate(UnityEngine.Resources.Load("Effects/fx_exhaustSparks_flameout"));
-
-			_sparkFX.transform.parent = part.transform;
-			_sparkFX.transform.position = part.transform.position;
-			_sparklauncher = _sparkFX.AddComponent<SparkLauncher>();
-
-			#endregion
-
-
 
 			dustFx = (GameObject)GameObject.Instantiate(UnityEngine.Resources.Load("Effects/fx_smokeTrail_light"));
 			dustFxParticleEmitter = dustFx.GetComponent<ParticleSystem>();
@@ -449,11 +405,11 @@ namespace CollisionFXUpdated
 
 		private void SetupLight()
 		{
-			scrapeLight = sparkFx.AddComponent<Light>();
-			scrapeLight.type = LightType.Point;
-			scrapeLight.range = 3f;
-			scrapeLight.shadows = LightShadows.None;
-			scrapeLight.enabled = false;
+			//scrapeLight = sparkFx.AddComponent<Light>();
+			//scrapeLight.type = LightType.Point;
+			//scrapeLight.range = 3f;
+			//scrapeLight.shadows = LightShadows.None;
+			//scrapeLight.enabled = false;
 		}
 
 		private void SetupAudio()
@@ -650,7 +606,7 @@ namespace CollisionFXUpdated
 					spheres[1].GetComponent<Renderer>().enabled = false;
 				}
 #endif
-				scrapeLight.enabled = false;
+				//scrapeLight.enabled = false;
 			}
 
 			if (ScrapeSounds != null && ScrapeSounds.audio != null)
@@ -712,54 +668,11 @@ namespace CollisionFXUpdated
 				{
 					if (CanSpark(colliderName, collidedWith) && FlightGlobals.ActiveVessel.atmDensity > 0 && FlightGlobals.currentMainBody.atmosphereContainsOxygen)
 					{
-						sparkFx.transform.position = contactPoint;
-
-						var sparkMain = sparkFxParticleEmitter.main;
-						var sparkEmission = sparkFxParticleEmitter.emission;
-
-
-						//sparkFxParticleEmitter.maxEnergy = speed / 10;
-						sparkMain.startLifetime = ConvertToMinMaxCurve(0f, speed / 10);     // Values determined
-																												  //sparkFxParticleEmitter.maxEmission = Mathf.Clamp((speed * 2), 0, 75);   // via experimentation.
-						sparkEmission.rateOverTime = ConvertToMinMaxCurve(0f, Mathf.Clamp((speed * 2), 0, 75));
-						sparkFxParticleEmitter.Emit(10 * (int)speed);
-						var velOverLifetime = sparkFxParticleEmitter.velocityOverLifetime;
-						//sparkFxParticleEmitter.worldVelocity = -part.Rigidbody.velocity;
-
-						Vector3? xminVel = Vector3.zero; ;
-						Vector3? xmaxVel = -part.Rigidbody.velocity;
-
-						if (xminVel != null)
-						{
-							var xmin = xminVel.Value;
-							var xmax = xmaxVel.Value;
-							if (xmin == xmax)
-							{
-								velOverLifetime.x = xmin.x;
-								velOverLifetime.y = xmin.y;
-								velOverLifetime.z = xmin.z;
-							}
-							else
-							{
-
-								velOverLifetime.x = new ParticleSystem.MinMaxCurve(xmin.x, xmax.x);
-								velOverLifetime.y = new ParticleSystem.MinMaxCurve(xmin.y, xmax.y);
-								velOverLifetime.z = new ParticleSystem.MinMaxCurve(xmin.z, xmax.z);
-							}
-						}
-
-						if (scrapeLight != null)
-						{
-							scrapeLight.enabled = true;
-							scrapeLight.color = Color.Lerp(lightColor1, lightColor2, UnityEngine.Random.Range(0f, 1f));
-							float intensityMultiplier = 1;
-							if (speed < minScrapeSpeed * 10)
-								intensityMultiplier = speed / (minScrapeSpeed * 10);
-							scrapeLight.intensity = UnityEngine.Random.Range(0f, sparkLightIntensity * intensityMultiplier);
-						}
+						_sparklauncher.DoCollision(contactPoint, (float)speed, true);
 					}
 					else
 					{
+						_sparklauncher.DoCollision(contactPoint, (float)speed, false);
 						/*fragmentFx.transform.position = contactPoint;
 						fragmentFx.particleEmitter.maxEnergy = speed / 10;                          // Values determined
 						fragmentFx.particleEmitter.maxEmission = Mathf.Clamp((speed * 2), 0, 75);   // via experimentation.
@@ -825,14 +738,11 @@ namespace CollisionFXUpdated
 					var colorOverLifetime = dustFxParticleEmitter.colorOverLifetime;
 					colorOverLifetime.enabled = true;
 					colorOverLifetime.color = new ParticleSystem.MinMaxGradient(grad);
-					dustFxParticleEmitter.Emit(150 * (int)speed);
+					dustFxParticleEmitter.transform.position = contactPoint;
+					dustFxParticleEmitter.transform.Rotate(-transform.forward);
+					//dustFxParticleEmitter.Emit(150 * (int)speed);
 					//}
 				}
-			}
-			else
-			{
-				if (scrapeLight != null)
-					scrapeLight.enabled = false;
 			}
 		}
 
@@ -885,7 +795,10 @@ namespace CollisionFXUpdated
 			var colorOverLifetime = dustFxParticleEmitter.colorOverLifetime;
 			colorOverLifetime.enabled = true;
 			colorOverLifetime.color = new ParticleSystem.MinMaxGradient(grad);
-			dustFxParticleEmitter.Emit(5000);
+			dustFxParticleEmitter.transform.position = contactPoint;
+			dustFxParticleEmitter.transform.Rotate(-transform.forward);
+			if(speed > 5)
+				dustFxParticleEmitter.Emit((int)Mathf.Clamp((speed * 2), 0, 75));
 		}
 
 		private void ScrapeSound(FXGroup sound, float speed)
