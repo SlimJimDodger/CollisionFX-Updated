@@ -180,18 +180,18 @@ namespace CollisionFXUpdated
 					_particleLights = _sparkSystem.lights;
 					_particleLights.light = light;
 					_particleLights.ratio = 0.5f;
-					_particleLights.rangeMultiplier = 0.9f;
-					_particleLights.intensityMultiplier = 7;
+					_particleLights.rangeMultiplier = 5;
+					_particleLights.intensityMultiplier = 5;
 					_particleLights.useParticleColor = false;
-					_particleLights.maxLights = 100;
+					_particleLights.maxLights = 10000;
 
 					_contactPtLight = _sparkObj.AddComponent<Light>();
 					_contactPtLight.transform.parent = _sparkObj.transform;
 					_contactPtLight.type = LightType.Point;
-					_contactPtLight.range = .3f;
+					_contactPtLight.range = 1;
 					_contactPtLight.intensity = 3f;
 					_contactPtLight.color = new Color32(255, 153, 0, 255);
-					_contactPtLight.enabled = false;
+					_contactPtLight.enabled = true;
 
 					_instantiated = true;
 					DoLights(false);
@@ -249,6 +249,7 @@ namespace CollisionFXUpdated
 		private void DoLights(bool lightOn)
 		{
 			_contactPtLight.enabled = lightOn;
+			
 			//var light = _particleLights.light;
 			_particleLights.light.enabled = lightOn;
 		}
@@ -272,6 +273,7 @@ namespace CollisionFXUpdated
 				_sparkSystem.transform.position = contactPoint;
 				_sparkSystem.transform.Rotate(-transform.forward);
 				_sparkSystem.transform.Rotate(new Vector3(0, 1, 0), 30f);
+				_contactPtLight.transform.position = contactPoint;
 
 				DoLights(doSpark);
 				DoSparks(doSpark, collisionSpeed);
