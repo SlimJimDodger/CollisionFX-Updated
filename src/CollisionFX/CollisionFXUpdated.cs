@@ -299,7 +299,7 @@ namespace CollisionFXUpdated
 
 
 			dustFx.transform.parent = part.transform;
-			dustFx.transform.position = part.transform.position;
+			dustFx.transform.position = -part.transform.forward;
 
 			//dustAnimator = dustFxParticleEmitter.GetComponent<ParticleAnimator>();
 

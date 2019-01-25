@@ -39,7 +39,7 @@ namespace CollisionFXUpdated
 		void Start()
 		{
 			_lightObj = new GameObject("cfx_light");
-			_meshObj = (GameObject)GameObject.Instantiate(UnityEngine.Resources.Load("Effects/fx_exhaustSparks_flameout"));
+			_meshObj = (GameObject)GameObject.Instantiate(UnityEngine.Resources.Load("Effects/fx_exhaustFlare_yellow"));
 			//_sparkSystem = _sparkObj.GetComponent<ParticleSystem>();
 
 			_sparkObj = new GameObject("sparks4u");
@@ -64,7 +64,7 @@ namespace CollisionFXUpdated
 					var main = _sparkSystem.main;
 
 					// length of time particles are emitted, control this later
-					main.duration = 5.0f;
+					main.duration = 1.0f;
 					// replay at end of main.duration seconds
 					main.loop = false;
 					// time of particle, die when reach 0
@@ -92,9 +92,9 @@ namespace CollisionFXUpdated
 					var shape = _sparkSystem.shape;
 					shape.enabled = true;
 
-					//shape.shapeType = ParticleSystemShapeType.Sphere;
-					//shape.radius = 0.1f;
-					//shape.scale = Vector3.one;
+					shape.shapeType = ParticleSystemShapeType.Sphere;
+					shape.radius = 0.1f;
+					shape.scale = Vector3.one;
 
 					//_meshObj = new GameObject();
 					//var meshRenderer = _sparkObj.GetComponent<MeshRenderer>();
@@ -104,14 +104,14 @@ namespace CollisionFXUpdated
 					//var meshFilter = _sparkObj.GetComponent<MeshFilter>();
 					//meshFilter.mesh = CreateSphere(null);
 					//shape.mesh = meshFilter.mesh;
-
-					shape.shapeType = ParticleSystemShapeType.Cone;
-					shape.angle = 40f;
-					shape.radius = 0.28f;
-					shape.radiusThickness = 1;
-					shape.arc = 180f;
-					shape.arcMode = ParticleSystemShapeMultiModeValue.Random;
-					shape.arcSpread = 0;
+				
+					//shape.shapeType = ParticleSystemShapeType.Cone;
+					//shape.angle = 20f;
+					//shape.radius = 0.01f;
+					//shape.radiusThickness = 1;
+					//shape.arc = 180f;
+					//shape.arcMode = ParticleSystemShapeMultiModeValue.Random;
+					//shape.arcSpread = 0;
 
 					var inheritVelocity = _sparkSystem.inheritVelocity;
 					inheritVelocity.enabled = true;
@@ -164,10 +164,11 @@ namespace CollisionFXUpdated
 					collisions.enableDynamicColliders = true;
 
 					var systemRender = _sparkSystem.GetComponent<ParticleSystemRenderer>();
-					systemRender.renderMode = ParticleSystemRenderMode.Stretch;
-					systemRender.velocityScale = 0.002f;
-					systemRender.lengthScale = 1.3f;
+					systemRender.renderMode = ParticleSystemRenderMode.Billboard;
+					//systemRender.velocityScale = 1f;
+					//systemRender.lengthScale = 2f;
 					systemRender.material = _meshObj.GetComponent<Renderer>().material;// UnityEngine.Resources.Load("Effects/fx_exhaustSparks_flameout");
+					//systemRender.normalDirection = 0;
 
 					//_lightObj.transform.parent = transform;
 					var light = _lightObj.AddComponent<Light>();
@@ -207,9 +208,7 @@ namespace CollisionFXUpdated
 
 		void Update()
 		{
-			timer += Time.deltaTime;
-
-			//DoLights(transform.forward.magnitude > 5f);
+						//DoLights(transform.forward.magnitude > 5f);
 
 			// Check if we have reached beyond 2 seconds.
 			// Subtracting two is more accurate over time than resetting to zero.
@@ -256,14 +255,20 @@ namespace CollisionFXUpdated
 
 		private void DoSparks(bool sparksOn, float collisionSpeed)
 		{
-			var multiplier = 10f;
-			//_emission.rateOverTime = 1000f;
+			//var multiplier = 10f;
+			//int emitVal = (int)(collisionSpeed * 5f); 
+			//_emission.rateOverTime = collisionSpeed * 5f;
 			//_emission.enabled = sparksOn;
-			var main = _sparkSystem.main;
-			main.startLifetime = 5f;//collisionSpeed / multiplier;
-			//main.startSize = collisionSpeed / multiplier;
-			//_sizeoverlifetime.sizeMultiplier = collisionSpeed / multiplier;
-			_sparkSystem.Emit((int)collisionSpeed * 10);
+			//var main = _sparkSystem.main;
+			//main.startLifetime = 5f;
+			//main.startSpeed = 1.0f;
+			//main.loop = true;
+			////collisionSpeed / multiplier;
+			////main.startSize = collisionSpeed / multiplier;
+			////_sizeoverlifetime.sizeMultiplier = collisionSpeed / multiplier;
+			////ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams();
+			////emitParams.
+			_sparkSystem.Emit((int)(collisionSpeed * 5f));
 		}
 
 		public void DoCollision(Vector3 contactPoint, float collisionSpeed, bool doSpark)
@@ -272,8 +277,11 @@ namespace CollisionFXUpdated
 			{
 				_sparkSystem.transform.position = contactPoint;
 				_sparkSystem.transform.Rotate(-transform.forward);
-				_sparkSystem.transform.Rotate(new Vector3(0, 1, 0), 30f);
+				_sparkSystem.transform.Rotate(new Vector3(0, 1, 0), 20f);
+				//_sparkSystem.transform.Translate(_sparkSystem.transform.up);
+
 				_contactPtLight.transform.position = contactPoint;
+
 
 				DoLights(doSpark);
 				DoSparks(doSpark, collisionSpeed);
