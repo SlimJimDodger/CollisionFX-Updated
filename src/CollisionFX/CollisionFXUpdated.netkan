@@ -1,8 +1,8 @@
 ﻿{
     "spec_version" : 1,
     "identifier"   : "CollisionFXUpdated",
-    "$kref"        : "#/ckan/spacedock/2065/CollisionFXUpdated",
+    "$kref"        : "#/ckan/spacedock/2065",
     "license"      : "GPL-2.0",
-
+	"abstract" : "CollisionFX-Updated for 1.4.x - 1.6.x",
 	 "depends": [{ "name": "ModuleManager" }]
 }
