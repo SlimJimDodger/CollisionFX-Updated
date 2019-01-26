@@ -316,6 +316,7 @@ namespace CollisionFXUpdated
 				_contactPtLight.transform.position = contactPoint;
 				_sparkSystem.transform.position = contactPoint;
 				_sparkSystem.transform.Rotate(transform.forward);
+				_sparkSystem.transform.Rotate(30f, 0f, 0f);
 
 				DoLights(doSpark);
 				DoSparks(doSpark, collisionSpeed);
