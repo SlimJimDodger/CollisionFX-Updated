@@ -284,7 +284,6 @@ namespace CollisionFXUpdated
 
 			_contactPtLight.intensity = Mathf.Clamp(collisionSpeed, .5f, 6f);
 			_particleLights.light.intensity = _contactPtLight.intensity;
-			//emitParams.velocity = Mathf.Clamp(0.75f * collisionSpeed, 0.5f, 25f) *_sparkSystem.transform.forward;
 
 			ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams();
 			main.startLifetime = lifetime;
