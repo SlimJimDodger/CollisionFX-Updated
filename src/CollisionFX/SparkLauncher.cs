@@ -48,10 +48,11 @@ namespace CollisionFXUpdated
 
 			_rigidBody = _sparkObj.AddComponent<Rigidbody>();
 			_rigidBody.useGravity = true;
-			_rigidBody.transform.parent = _sparkObj.transform;
+			_rigidBody.transform.parent = _sparkObj.transform.parent;
 
 			_sparkSystem = new ParticleSystem();
 			_sparkSystem = _sparkObj.AddComponent<ParticleSystem>();
+			_sparkSystem.transform.parent = _rigidBody.transform;
 
 			if (_sparkSystem == null)
 			{
@@ -194,7 +195,19 @@ namespace CollisionFXUpdated
 					_contactPtLight.color = new Color32(255, 153, 0, 255);
 					_contactPtLight.enabled = true;
 
+					#region gravity
+					var _externalforce = _sparkSystem.externalForces;
+					_externalforce.enabled = true;
+
+					var forceOverLifetime = _sparkSystem.forceOverLifetime;
+					forceOverLifetime.enabled = true;
+					forceOverLifetime.space = ParticleSystemSimulationSpace.World;
+					forceOverLifetime.x = Physics.gravity.x;
+					forceOverLifetime.y = Physics.gravity.y;
+					forceOverLifetime.z = Physics.gravity.z;
+					#endregion
 					_instantiated = true;
+
 					DoLights(false);
 					DoSparks(false, 0);
 					//_sparkSystem.Play();
@@ -268,7 +281,9 @@ namespace CollisionFXUpdated
 			////_sizeoverlifetime.sizeMultiplier = collisionSpeed / multiplier;
 			////ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams();
 			////emitParams.
-			_sparkSystem.Emit((int)(collisionSpeed * 5f));
+			
+			if(sparksOn)
+				_sparkSystem.Emit((int)(collisionSpeed * 5f));
 		}
 
 		public void DoCollision(Vector3 contactPoint, float collisionSpeed, bool doSpark)
