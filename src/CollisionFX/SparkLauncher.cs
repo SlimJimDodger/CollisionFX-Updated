@@ -201,6 +201,7 @@ namespace CollisionFXUpdated
 					_contactPtLight.color = new Color32(255, 153, 0, 255);
 					_contactPtLight.enabled = true;
 
+					#region trails
 					_trails = _sparkSystem.trails;
 					_trails.enabled = false;
 					_trails.ratio = 0.1f;
@@ -220,6 +221,7 @@ namespace CollisionFXUpdated
 					//);
 					//colorOverLifetime.color = grad2;
 					//trails.colorOverLifetime = grad;
+					#endregion
 
 					#region gravity
 					var _externalforce = _sparkSystem.externalForces;
@@ -300,7 +302,9 @@ namespace CollisionFXUpdated
 			//_emission.enabled = sparksOn;
 			var lifetime = Mathf.Clamp(collisionSpeed, 0.1f, .5f);
 			var main = _sparkSystem.main;
-
+			_trails.enabled = false;
+			_trails.lifetime = .1f;
+			_trails.ratio = .1f;
 			//main.startSpeed = 1.0f;
 			//main.loop = true;
 			////collisionSpeed / multiplier;
