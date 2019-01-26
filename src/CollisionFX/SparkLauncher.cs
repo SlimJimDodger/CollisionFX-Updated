@@ -87,7 +87,7 @@ namespace CollisionFXUpdated
 
 					 _emission = _sparkSystem.emission;
 					// how many per second / how much flow 
-					_emission.rateOverTime = 20f;
+					_emission.rateOverTime = 0f;
 					_emission.enabled = false;
 
 					var shape = _sparkSystem.shape;
@@ -283,9 +283,7 @@ namespace CollisionFXUpdated
 			//main.loop = true;
 			////collisionSpeed / multiplier;
 			////main.startSize = collisionSpeed / multiplier;
-			////_sizeoverlifetime.sizeMultiplier = collisionSpeed / multiplier;
-			////ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams();
-			////emitParams.
+			//_sizeoverlifetime.enabled = false; ;
 
 			_contactPtLight.intensity = Mathf.Clamp(collisionSpeed, .5f, 6f);
 			_particleLights.light.intensity = _contactPtLight.intensity;
@@ -300,7 +298,7 @@ namespace CollisionFXUpdated
 				emitcount = (int)(collisionSpeed / 2);
 			}
 			if (sparksOn)
-				_sparkSystem.Emit((int)(collisionSpeed * 5f));
+				_sparkSystem.Emit(emitcount);
 		}
 
 		public void DoCollision(Vector3 contactPoint, float collisionSpeed, bool doSpark)
@@ -308,7 +306,7 @@ namespace CollisionFXUpdated
 			if (_instantiated)
 			{
 				_sparkSystem.transform.position = contactPoint;
-				_sparkSystem.transform.Rotate(-transform.forward);
+				_sparkSystem.transform.Rotate(transform.forward);
 				_sparkSystem.transform.Rotate(new Vector3(0, 1, 0), 20f);
 				//_sparkSystem.transform.Translate(_sparkSystem.transform.up);
 
@@ -321,7 +319,7 @@ namespace CollisionFXUpdated
 			}
 		}
 
-		#region 
+		#region Static Helpers
 		static ParticleSystem.MinMaxCurve GenerateSizeGrowCurve(float sizeGrow, float minTime, float maxTime)
 		{
 			const float step = 0.2f;
