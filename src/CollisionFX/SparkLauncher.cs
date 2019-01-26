@@ -74,7 +74,7 @@ namespace CollisionFXUpdated
 					// starting size of particle
 					main.startSize = new ParticleSystem.MinMaxCurve(0.05f, 0.25f);
 					
-					main.startSpeed = 4.5f;
+					main.startSpeed = 1f;
 
 					main.startColor = (Color)new Color32(255, 192, 98, 255);
 
@@ -94,9 +94,9 @@ namespace CollisionFXUpdated
 					var shape = _sparkSystem.shape;
 					shape.enabled = true;
 
-					shape.shapeType = ParticleSystemShapeType.Sphere;
-					shape.radius = 0.1f;
-					shape.scale = Vector3.one;
+					//shape.shapeType = ParticleSystemShapeType.Sphere;
+					//shape.radius = 0.1f;
+					//shape.scale = Vector3.one;
 
 					//_meshObj = new GameObject();
 					//var meshRenderer = _sparkObj.GetComponent<MeshRenderer>();
@@ -106,14 +106,14 @@ namespace CollisionFXUpdated
 					//var meshFilter = _sparkObj.GetComponent<MeshFilter>();
 					//meshFilter.mesh = CreateSphere(null);
 					//shape.mesh = meshFilter.mesh;
-				
-					//shape.shapeType = ParticleSystemShapeType.Cone;
-					//shape.angle = 20f;
-					//shape.radius = 0.01f;
-					//shape.radiusThickness = 1;
-					//shape.arc = 180f;
-					//shape.arcMode = ParticleSystemShapeMultiModeValue.Random;
-					//shape.arcSpread = 0;
+
+					shape.shapeType = ParticleSystemShapeType.Cone;
+					shape.angle = 20f;
+					shape.radius = 0.01f;
+					shape.radiusThickness = 1;
+					shape.arc = 180f;
+					shape.arcMode = ParticleSystemShapeMultiModeValue.Random;
+					shape.arcSpread = 0;
 
 					var inheritVelocity = _sparkSystem.inheritVelocity;
 					inheritVelocity.enabled = false;
@@ -315,6 +315,7 @@ namespace CollisionFXUpdated
 				_contactPtLight.transform.position = contactPoint;
 				_sparkSystem.transform.position = contactPoint;
 				_sparkSystem.transform.Rotate(transform.forward);
+				_sparkSystem.transform.Rotate(30f, 0f, 0f);
 
 				DoLights(doSpark);
 				DoSparks(doSpark, collisionSpeed);
