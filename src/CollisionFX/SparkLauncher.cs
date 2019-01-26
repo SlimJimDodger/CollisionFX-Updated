@@ -222,7 +222,6 @@ namespace CollisionFXUpdated
 					//trails.colorOverLifetime = grad;
 
 					#region gravity
-
 					var _externalforce = _sparkSystem.externalForces;
 					_externalforce.enabled = true;
 
@@ -232,14 +231,9 @@ namespace CollisionFXUpdated
 					forceOverLifetime.x = Physics.gravity.x;
 					forceOverLifetime.y = Physics.gravity.y;
 					forceOverLifetime.z = Physics.gravity.z;
-
 					#endregion
 
 					_instantiated = true;
-
-					DoLights(false);
-					DoSparks(false, 0);
-					//_sparkSystem.Play();11
 				}
 				catch (Exception ex)
 				{
