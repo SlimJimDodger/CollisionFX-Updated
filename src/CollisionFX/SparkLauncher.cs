@@ -1,7 +1,7 @@
 ﻿//-------------------------------------------------------------
 // Collision FX-Updated
 // Author:    SlimJimDodger
-// Version:   5.0a
+// Version:   0.8.1
 // Released:  2019-01-22
 // KSP:       v1.6.1
 
@@ -174,24 +174,25 @@ namespace CollisionFXUpdated
 					//_lightObj.transform.parent = transform;
 					var light = _lightObj.AddComponent<Light>();
 					light.type = LightType.Point;
-					light.range = 1;
-					light.intensity = 3f;
+					light.range = .01f;
+					light.intensity = 2f;
 					light.color = new Color32(255, 157, 82, 255);
 					light.enabled = false;
 
 					_particleLights = _sparkSystem.lights;
 					_particleLights.light = light;
-					_particleLights.ratio = 0.5f;
-					_particleLights.rangeMultiplier = 5;
-					_particleLights.intensityMultiplier = 5;
+					_particleLights.ratio = 1f;
+					_particleLights.rangeMultiplier = 1;
+					_particleLights.intensityMultiplier = 1;
 					_particleLights.useParticleColor = false;
 					_particleLights.maxLights = 10000;
+					_particleLights.enabled = true;
 
 					_contactPtLight = _sparkObj.AddComponent<Light>();
 					_contactPtLight.transform.parent = _sparkObj.transform;
 					_contactPtLight.type = LightType.Point;
-					_contactPtLight.range = 1;
-					_contactPtLight.intensity = 3f;
+					_contactPtLight.range = 0.5f;
+					_contactPtLight.intensity = 6f;
 					_contactPtLight.color = new Color32(255, 153, 0, 255);
 					_contactPtLight.enabled = true;
 
@@ -229,9 +230,12 @@ namespace CollisionFXUpdated
 			if (timer > waitTime)
 			{
 				//_sparkSystem.Emit(UnityEngine.Random.Range(200, 1000));
-				if (Time.frameCount % 10 == 0)
+				if (Time.frameCount % 2 == 0)
 				{
-					DoLights(false);
+					if (!_sparkSystem.isEmitting)
+					{
+						DoLights(false);
+					}
 					//DoSparks(false);
 					//var emission = _sparkSystem.emission;
 					////if (_sparkSystem.isPlaying)
@@ -282,8 +286,20 @@ namespace CollisionFXUpdated
 			////_sizeoverlifetime.sizeMultiplier = collisionSpeed / multiplier;
 			////ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams();
 			////emitParams.
-			
-			if(sparksOn)
+
+			_contactPtLight.intensity = Mathf.Clamp(collisionSpeed, .5f, 6f);
+			_particleLights.light.intensity = _contactPtLight.intensity;
+
+			var emitcount = 0;
+			if (collisionSpeed < 5f)
+			{
+				emitcount = 1;
+			}
+			else
+			{
+				emitcount = (int)(collisionSpeed / 2);
+			}
+			if (sparksOn)
 				_sparkSystem.Emit((int)(collisionSpeed * 5f));
 		}
 
