@@ -157,6 +157,7 @@ namespace CollisionFXUpdated
 					//_sizeoverlifetime.size = GenerateSizeGrowCurve(0.01f, 0f, 5f);
 					_sizeoverlifetime.size = new ParticleSystem.MinMaxCurve(1, animCurve);
 
+					#region collisions
 					var collisions = _sparkSystem.collision;
 					collisions.enabled = true;
 					collisions.mode = ParticleSystemCollisionMode.Collision3D;
@@ -170,11 +171,12 @@ namespace CollisionFXUpdated
 					collisions.collidesWith = 1;
 					collisions.maxCollisionShapes = 256;
 					collisions.enableDynamicColliders = true;
+					#endregion
 
 					var systemRender = _sparkSystem.GetComponent<ParticleSystemRenderer>();
-					systemRender.renderMode = ParticleSystemRenderMode.Billboard;
-					//systemRender.velocityScale = 1.2f;
-					//systemRender.lengthScale = 1.2f;
+					systemRender.renderMode = ParticleSystemRenderMode.Stretch;
+					systemRender.velocityScale = 0.3f;
+					systemRender.lengthScale = 1.2f;
 					systemRender.material = _meshObj.GetComponent<Renderer>().material;// UnityEngine.Resources.Load("Effects/fx_exhaustSparks_flameout");
 					systemRender.trailMaterial = _meshObj.GetComponent<Renderer>().material;
 					//systemRender.minParticleSize;
@@ -189,6 +191,7 @@ namespace CollisionFXUpdated
 					light.intensity = 2f;
 					light.color = new Color32(255, 157, 82, 255);
 					light.enabled = false;
+					light.renderMode = LightRenderMode.ForcePixel;
 
 					_particleLights = _sparkSystem.lights;
 					_particleLights.light = light;
@@ -289,21 +292,23 @@ namespace CollisionFXUpdated
 			var lifetime = Mathf.Clamp(collisionSpeed, 0.1f, 1f);
 			var main = _sparkSystem.main;
 
+			_contactPtLight.range = Mathf.Clamp(collisionSpeed, 0.01f, 0.5f);
 			_contactPtLight.intensity = Mathf.Clamp(collisionSpeed, .5f, 6f);
 			_particleLights.light.intensity = _contactPtLight.intensity;
 
 			ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams();
 			main.startLifetime = lifetime;
 			main.duration = lifetime;
-			
+
+			var startSize = 0.15f;
 			var animCurve = new AnimationCurve();
-			animCurve.AddKey(0.01f, 0.4f);
-			animCurve.AddKey(lifetime, 0.01f);
+			animCurve.AddKey(0.01f, startSize);
+			animCurve.AddKey(lifetime, 0.0f);
 			var minmax = new ParticleSystem.MinMaxCurve(1, animCurve);
 			_sizeoverlifetime.size = minmax;
-			main.startSize = .4f;
+			main.startSize = startSize;
 
-			_trails.enabled = false;
+			_trails.enabled = true;
 			_trails.lifetime = .1f;
 			_trails.ratio = .1f;
 			//_trails.dieWithParticles = true;
