@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="CollisionFX-Updated.version" />
+    <None Include="CollisionFXUpdated.netkan" />
     <None Include="ModuleManager_CollisionFX.cfg" />
     <None Include="settings.cfg" />
   </ItemGroup>

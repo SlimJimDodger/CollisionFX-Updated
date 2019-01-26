@@ -200,6 +200,7 @@ namespace CollisionFXUpdated
 					_contactPtLight.color = new Color32(255, 153, 0, 255);
 					_contactPtLight.enabled = true;
 
+					#region trails
 					_trails = _sparkSystem.trails;
 					_trails.enabled = false;
 					_trails.ratio = 0.1f;
@@ -219,6 +220,7 @@ namespace CollisionFXUpdated
 					//);
 					//colorOverLifetime.color = grad2;
 					//trails.colorOverLifetime = grad;
+					#endregion
 
 					#region gravity
 					var _externalforce = _sparkSystem.externalForces;
@@ -332,7 +334,6 @@ namespace CollisionFXUpdated
 				_contactPtLight.transform.position = contactPoint;
 				_sparkSystem.transform.position = contactPoint;
 				_sparkSystem.transform.Rotate(transform.forward);
-				_sparkSystem.transform.Rotate(new Vector3(0, 1, 0), 20f);
 
 				DoLights(doSpark);
 				DoSparks(doSpark, collisionSpeed);
