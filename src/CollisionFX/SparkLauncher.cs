@@ -1,7 +1,7 @@
 ﻿//-------------------------------------------------------------
 // Collision FX-Updated
 // Author:    SlimJimDodger
-// Version:   0.9
+// Version:   0.8.1
 // Released:  2019-01-22
 // KSP:       v1.6.1
 
@@ -312,7 +312,7 @@ namespace CollisionFXUpdated
 			////collisionSpeed / multiplier;
 			////main.startSize = collisionSpeed / multiplier;
 			////_sizeoverlifetime.sizeMultiplier = collisionSpeed / multiplier;
-			///
+
 			_contactPtLight.intensity = Mathf.Clamp(collisionSpeed, .5f, 6f);
 			_particleLights.light.intensity = _contactPtLight.intensity;
 			ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams();
@@ -327,8 +327,9 @@ namespace CollisionFXUpdated
 
 			emitParams.velocity = 0.75f * collisionSpeed * _sparkSystem.transform.forward;
 			emitParams.startLifetime = lifetime;
+
 			var emitcount = 0;
-		if (collisionSpeed < 5f)
+			if (collisionSpeed < 5f)
 			{
 				emitcount = 1;
 			}
