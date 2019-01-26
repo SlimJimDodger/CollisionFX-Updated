@@ -1,7 +1,7 @@
 -------------------------------------------------------------
  Collision FX-Updated 
  Author:    SlimJimDodger
- Version:   5.0a
+ Version:   0.8.1
  Released:  2019-01-22
  KSP:       v1.6.1
 
