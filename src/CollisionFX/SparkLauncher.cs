@@ -169,6 +169,9 @@ namespace CollisionFXUpdated
 					//systemRender.velocityScale = 1f;
 					//systemRender.lengthScale = 2f;
 					systemRender.material = _meshObj.GetComponent<Renderer>().material;// UnityEngine.Resources.Load("Effects/fx_exhaustSparks_flameout");
+					systemRender.trailMaterial = _meshObj.GetComponent<Renderer>().material;
+					//systemRender.minParticleSize;
+					//systemRender.maxParticleSize;
 					//systemRender.normalDirection = 0;
 
 					//_lightObj.transform.parent = transform;
