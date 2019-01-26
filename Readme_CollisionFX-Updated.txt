@@ -15,6 +15,7 @@
 
 
 
+
 -------------------------------------------------------------
  Collision FX
  Author:    pizzaoverhead
@@ -46,6 +47,8 @@ Uninstallation
 Delete the CollisionFX folder inside GameData.
 
 
+
+******* no config options as of 5.0 **********
 Configuration options
 ---------------------
 volume - How loud the sound effects should be played. 1 is normal volume, 0.5 is half volume.
@@ -71,7 +74,19 @@ RoadNoise.wav - Modified from "Tires car without an engine." by petruchio_ru, av
 
 Version history
 ---------------
-5.0a (2019-01-09)
+0.8.1 (2019-01-26)
+- implemented trailers 
+- more code cleanup in sparks
+- sparks look a lot better
+- sound still mostly not playing
+
+0.8b (2019-01-24)
+- beta release
+- moved particles out of main code
+- initial sparks
+- sounds are mostly broken
+
+5.0a (2019-01-23)
 - Convert ParticleEmitter's to ParticleSystem's
 - Rebuilt for KSP 1.4.++
 - Cross fingers
