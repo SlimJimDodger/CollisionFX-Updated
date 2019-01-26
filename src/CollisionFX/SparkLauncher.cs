@@ -27,6 +27,7 @@ namespace CollisionFXUpdated
 		ParticleSystem.EmissionModule _emission;
 		ParticleSystem.LightsModule _particleLights;
 		private ParticleSystem.SizeOverLifetimeModule _sizeoverlifetime;
+		private ParticleSystem.TrailModule _trails;
 
 		private float waitTime = 0.5f;
 		private float timer = 0.0f;
@@ -199,6 +200,26 @@ namespace CollisionFXUpdated
 					_contactPtLight.color = new Color32(255, 153, 0, 255);
 					_contactPtLight.enabled = true;
 
+					_trails = _sparkSystem.trails;
+					_trails.enabled = false;
+					_trails.ratio = 0.1f;
+					_trails.lifetime = .25f;
+					_trails.textureMode = ParticleSystemTrailTextureMode.Stretch;
+					//trails.dieWithParticles = true;
+					_trails.sizeAffectsWidth = true;
+					_trails.minVertexDistance = 0.2f;
+					_trails.inheritParticleColor = true;
+					_trails.worldSpace = true;
+					_trails.sizeAffectsLifetime = false;
+					_trails.widthOverTrail = 0.2f;
+					//var grad2 = new Gradient();
+					//grad2.SetKeys(
+					//	 new GradientColorKey[] { new GradientColorKey(new Color32(255, 244, 232, 255), 0.0f), new GradientColorKey(new Color32(255, 23, 23, 0), 0.3f), new GradientColorKey(new Color32(255, 23, 23, 0), 1.0f) },
+					//	 new GradientAlphaKey[] { new GradientAlphaKey(1.0f, 0.0f), new GradientAlphaKey(1.0f, 0.5f), new GradientAlphaKey(alpha, 0.0f) }
+					//);
+					//colorOverLifetime.color = grad2;
+					//trails.colorOverLifetime = grad;
+
 					#region gravity
 					var _externalforce = _sparkSystem.externalForces;
 					_externalforce.enabled = true;
@@ -212,10 +233,6 @@ namespace CollisionFXUpdated
 					#endregion
 
 					_instantiated = true;
-
-					DoLights(false);
-					DoSparks(false, 0);
-					//_sparkSystem.Play();
 				}
 				catch (Exception ex)
 				{
@@ -282,7 +299,9 @@ namespace CollisionFXUpdated
 			//_emission.enabled = sparksOn;
 			var lifetime = Mathf.Clamp(collisionSpeed, 0.1f, .5f);
 			var main = _sparkSystem.main;
-
+			_trails.enabled = false;
+			_trails.lifetime = .1f;
+			_trails.ratio = .1f;
 			//main.startSpeed = 1.0f;
 			//main.loop = true;
 			////collisionSpeed / multiplier;
@@ -310,13 +329,10 @@ namespace CollisionFXUpdated
 		{
 			if (_instantiated)
 			{
+				_contactPtLight.transform.position = contactPoint;
 				_sparkSystem.transform.position = contactPoint;
 				_sparkSystem.transform.Rotate(transform.forward);
 				_sparkSystem.transform.Rotate(new Vector3(0, 1, 0), 20f);
-				//_sparkSystem.transform.Translate(_sparkSystem.transform.up);
-
-				_contactPtLight.transform.position = contactPoint;
-
 
 				DoLights(doSpark);
 				DoSparks(doSpark, collisionSpeed);
