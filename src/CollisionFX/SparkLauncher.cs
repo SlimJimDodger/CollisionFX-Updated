@@ -312,6 +312,7 @@ namespace CollisionFXUpdated
 			////collisionSpeed / multiplier;
 			////main.startSize = collisionSpeed / multiplier;
 			////_sizeoverlifetime.sizeMultiplier = collisionSpeed / multiplier;
+			//_sizeoverlifetime.enabled = false; ;
 
 			_contactPtLight.intensity = Mathf.Clamp(collisionSpeed, .5f, 6f);
 			_particleLights.light.intensity = _contactPtLight.intensity;
@@ -322,7 +323,7 @@ namespace CollisionFXUpdated
 			_trails.enabled = false;
 			_trails.lifetime = .1f;
 			_trails.ratio = .1f;
-			_sizeoverlifetime.enabled = true;
+			_sizeoverlifetime.enabled = false;
 			//_trails.dieWithParticles = true;
 
 			emitParams.velocity = 0.75f * collisionSpeed * _sparkSystem.transform.forward;
@@ -340,19 +341,15 @@ namespace CollisionFXUpdated
 
 			if(sparksOn)
 				_sparkSystem.Emit(emitParams,emitcount);
-
 		}
 
 		public void DoCollision(Vector3 contactPoint, float collisionSpeed, bool doSpark)
 		{
 			if (_instantiated)
 			{
+				_contactPtLight.transform.position = contactPoint;
 				_sparkSystem.transform.position = contactPoint;
 				_sparkSystem.transform.Rotate(transform.forward);
-				//_sparkSystem.transform.Rotate(new Vector3(0, 1, 0), 30f);
-				//_sparkSystem.transform.Translate(_sparkSystem.transform.up);
-
-				_contactPtLight.transform.position = contactPoint;
 
 				DoLights(doSpark);
 				DoSparks(doSpark, collisionSpeed);
