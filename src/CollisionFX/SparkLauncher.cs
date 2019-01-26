@@ -280,12 +280,14 @@ namespace CollisionFXUpdated
 			//int emitVal = (int)(collisionSpeed * 5f); 
 			//_emission.rateOverTime = collisionSpeed * 5f;
 			//_emission.enabled = sparksOn;
-			//var main = _sparkSystem.main;
-			//main.startLifetime = 5f;
+			var lifetime = Mathf.Clamp(collisionSpeed, 0.1f, .5f);
+			var main = _sparkSystem.main;
+
 			//main.startSpeed = 1.0f;
 			//main.loop = true;
 			////collisionSpeed / multiplier;
 			////main.startSize = collisionSpeed / multiplier;
+			////_sizeoverlifetime.sizeMultiplier = collisionSpeed / multiplier;
 			//_sizeoverlifetime.enabled = false; ;
 
 			_contactPtLight.intensity = Mathf.Clamp(collisionSpeed, .5f, 6f);
