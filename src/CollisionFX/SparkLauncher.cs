@@ -1,7 +1,7 @@
 ﻿//-------------------------------------------------------------
 // Collision FX-Updated
 // Author:    SlimJimDodger
-// Version:   5.0a
+// Version:   0.9
 // Released:  2019-01-22
 // KSP:       v1.6.1
 
@@ -27,6 +27,7 @@ namespace CollisionFXUpdated
 		ParticleSystem.EmissionModule _emission;
 		ParticleSystem.LightsModule _particleLights;
 		private ParticleSystem.SizeOverLifetimeModule _sizeoverlifetime;
+		private ParticleSystem.TrailModule _trails;
 
 		private float waitTime = 0.5f;
 		private float timer = 0.0f;
@@ -48,10 +49,11 @@ namespace CollisionFXUpdated
 
 			_rigidBody = _sparkObj.AddComponent<Rigidbody>();
 			_rigidBody.useGravity = true;
-			_rigidBody.transform.parent = _sparkObj.transform;
+			_rigidBody.transform.parent = _sparkObj.transform.parent;
 
 			_sparkSystem = new ParticleSystem();
 			_sparkSystem = _sparkObj.AddComponent<ParticleSystem>();
+			_sparkSystem.transform.parent = _rigidBody.transform;
 
 			if (_sparkSystem == null)
 			{
@@ -70,13 +72,13 @@ namespace CollisionFXUpdated
 					// time of particle, die when reach 0
 					main.startLifetime = 2f;
 					// starting size of particle
-					main.startSize = new ParticleSystem.MinMaxCurve(0.05f, 0.25f);
+					main.startSize = new ParticleSystem.MinMaxCurve(0.1f, 0.4f);
 					
-					main.startSpeed = 4.5f;
+					main.startSpeed = 1f;
 
 					main.startColor = (Color)new Color32(255, 192, 98, 255);
 
-					main.gravityModifier = 1;
+					main.gravityModifier = 2;
 					// particles are released into the world
 					main.simulationSpace = ParticleSystemSimulationSpace.World;
 					// don't start on start
@@ -86,15 +88,15 @@ namespace CollisionFXUpdated
 
 					 _emission = _sparkSystem.emission;
 					// how many per second / how much flow 
-					_emission.rateOverTime = 20f;
+					_emission.rateOverTime = 0f;
 					_emission.enabled = false;
 
 					var shape = _sparkSystem.shape;
 					shape.enabled = true;
 
-					shape.shapeType = ParticleSystemShapeType.Sphere;
-					shape.radius = 0.1f;
-					shape.scale = Vector3.one;
+					//shape.shapeType = ParticleSystemShapeType.Sphere;
+					//shape.radius = 0.1f;
+					//shape.scale = Vector3.one;
 
 					//_meshObj = new GameObject();
 					//var meshRenderer = _sparkObj.GetComponent<MeshRenderer>();
@@ -104,17 +106,17 @@ namespace CollisionFXUpdated
 					//var meshFilter = _sparkObj.GetComponent<MeshFilter>();
 					//meshFilter.mesh = CreateSphere(null);
 					//shape.mesh = meshFilter.mesh;
-				
-					//shape.shapeType = ParticleSystemShapeType.Cone;
-					//shape.angle = 20f;
-					//shape.radius = 0.01f;
-					//shape.radiusThickness = 1;
-					//shape.arc = 180f;
-					//shape.arcMode = ParticleSystemShapeMultiModeValue.Random;
-					//shape.arcSpread = 0;
+
+					shape.shapeType = ParticleSystemShapeType.Cone;
+					shape.angle = 20f;
+					shape.radius = 0.01f;
+					shape.radiusThickness = 1;
+					shape.arc = 180f;
+					shape.arcMode = ParticleSystemShapeMultiModeValue.Random;
+					shape.arcSpread = 0;
 
 					var inheritVelocity = _sparkSystem.inheritVelocity;
-					inheritVelocity.enabled = true;
+					inheritVelocity.enabled = false;
 					inheritVelocity.mode = ParticleSystemInheritVelocityMode.Initial;
 					inheritVelocity.curveMultiplier = 0.75f;
 
@@ -147,14 +149,15 @@ namespace CollisionFXUpdated
 
 					_sizeoverlifetime = _sparkSystem.sizeOverLifetime;
 					_sizeoverlifetime.enabled = true;
-					_sizeoverlifetime.size = new ParticleSystem.MinMaxCurve(1, animCurve);
+					_sizeoverlifetime.size = GenerateSizeGrowCurve(0.01f, 0f, 5f);
+					//_sizeoverlifetime.size = new ParticleSystem.MinMaxCurve(1, animCurve);
 
 					var collisions = _sparkSystem.collision;
 					collisions.enabled = true;
 					collisions.mode = ParticleSystemCollisionMode.Collision3D;
 					collisions.type = ParticleSystemCollisionType.World;
 					collisions.dampen = 0.25f;
-					collisions.bounce = 0.2f;
+					collisions.bounce = 0.7f;
 					collisions.minKillSpeed = 0;
 					collisions.maxKillSpeed = 10000;
 					collisions.radiusScale = 1.0f;
@@ -165,39 +168,73 @@ namespace CollisionFXUpdated
 
 					var systemRender = _sparkSystem.GetComponent<ParticleSystemRenderer>();
 					systemRender.renderMode = ParticleSystemRenderMode.Billboard;
-					//systemRender.velocityScale = 1f;
-					//systemRender.lengthScale = 2f;
+					//systemRender.velocityScale = 1.2f;
+					//systemRender.lengthScale = 1.2f;
 					systemRender.material = _meshObj.GetComponent<Renderer>().material;// UnityEngine.Resources.Load("Effects/fx_exhaustSparks_flameout");
+					systemRender.trailMaterial = _meshObj.GetComponent<Renderer>().material;
+					//systemRender.minParticleSize;
+					//systemRender.maxParticleSize;
 					//systemRender.normalDirection = 0;
 
 					//_lightObj.transform.parent = transform;
 					var light = _lightObj.AddComponent<Light>();
 					light.type = LightType.Point;
-					light.range = 1;
-					light.intensity = 3f;
+					light.range = .01f;
+					light.intensity = 2f;
 					light.color = new Color32(255, 157, 82, 255);
 					light.enabled = false;
 
 					_particleLights = _sparkSystem.lights;
 					_particleLights.light = light;
-					_particleLights.ratio = 0.5f;
-					_particleLights.rangeMultiplier = 5;
-					_particleLights.intensityMultiplier = 5;
+					_particleLights.ratio = 1f;
+					_particleLights.rangeMultiplier = 1;
+					_particleLights.intensityMultiplier = 1;
 					_particleLights.useParticleColor = false;
 					_particleLights.maxLights = 10000;
+					_particleLights.enabled = true;
 
 					_contactPtLight = _sparkObj.AddComponent<Light>();
 					_contactPtLight.transform.parent = _sparkObj.transform;
 					_contactPtLight.type = LightType.Point;
-					_contactPtLight.range = 1;
-					_contactPtLight.intensity = 3f;
+					_contactPtLight.range = 0.5f;
+					_contactPtLight.intensity = 6f;
 					_contactPtLight.color = new Color32(255, 153, 0, 255);
 					_contactPtLight.enabled = true;
+
+					_trails = _sparkSystem.trails;
+					_trails.enabled = false;
+					_trails.ratio = 0.1f;
+					_trails.lifetime = .25f;
+					_trails.textureMode = ParticleSystemTrailTextureMode.Stretch;
+					//trails.dieWithParticles = true;
+					_trails.sizeAffectsWidth = true;
+					_trails.minVertexDistance = 0.2f;
+					_trails.inheritParticleColor = true;
+					_trails.worldSpace = true;
+					_trails.sizeAffectsLifetime = false;
+					_trails.widthOverTrail = 0.2f;
+					//var grad2 = new Gradient();
+					//grad2.SetKeys(
+					//	 new GradientColorKey[] { new GradientColorKey(new Color32(255, 244, 232, 255), 0.0f), new GradientColorKey(new Color32(255, 23, 23, 0), 0.3f), new GradientColorKey(new Color32(255, 23, 23, 0), 1.0f) },
+					//	 new GradientAlphaKey[] { new GradientAlphaKey(1.0f, 0.0f), new GradientAlphaKey(1.0f, 0.5f), new GradientAlphaKey(alpha, 0.0f) }
+					//);
+					//colorOverLifetime.color = grad2;
+					//trails.colorOverLifetime = grad;
+
+					var _externalforce = _sparkSystem.externalForces;
+					_externalforce.enabled = true;
+
+					var forceOverLifetime = _sparkSystem.forceOverLifetime;
+					forceOverLifetime.enabled = true;
+					forceOverLifetime.space = ParticleSystemSimulationSpace.World;
+					forceOverLifetime.x = Physics.gravity.x;
+					forceOverLifetime.y = Physics.gravity.y;
+					forceOverLifetime.z = Physics.gravity.z;
 
 					_instantiated = true;
 					DoLights(false);
 					DoSparks(false, 0);
-					//_sparkSystem.Play();
+					//_sparkSystem.Play();11
 				}
 				catch (Exception ex)
 				{
@@ -215,9 +252,12 @@ namespace CollisionFXUpdated
 			if (timer > waitTime)
 			{
 				//_sparkSystem.Emit(UnityEngine.Random.Range(200, 1000));
-				if (Time.frameCount % 10 == 0)
+				if (Time.frameCount % 2 == 0)
 				{
-					DoLights(false);
+					if (!_sparkSystem.isEmitting)
+					{
+						DoLights(false);
+					}
 					//DoSparks(false);
 					//var emission = _sparkSystem.emission;
 					////if (_sparkSystem.isPlaying)
@@ -259,16 +299,40 @@ namespace CollisionFXUpdated
 			//int emitVal = (int)(collisionSpeed * 5f); 
 			//_emission.rateOverTime = collisionSpeed * 5f;
 			//_emission.enabled = sparksOn;
-			//var main = _sparkSystem.main;
-			//main.startLifetime = 5f;
+			var lifetime = Mathf.Clamp(collisionSpeed, 0.1f, .5f);
+			var main = _sparkSystem.main;
+
 			//main.startSpeed = 1.0f;
 			//main.loop = true;
 			////collisionSpeed / multiplier;
 			////main.startSize = collisionSpeed / multiplier;
 			////_sizeoverlifetime.sizeMultiplier = collisionSpeed / multiplier;
-			////ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams();
-			////emitParams.
-			_sparkSystem.Emit((int)(collisionSpeed * 5f));
+			_contactPtLight.intensity = Mathf.Clamp(collisionSpeed, .5f, 6f);
+			_particleLights.light.intensity = _contactPtLight.intensity;
+			ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams();
+			//emitParams.velocity = Mathf.Clamp(0.75f * collisionSpeed, 0.5f, 25f) *_sparkSystem.transform.forward;
+			main.startLifetime = lifetime;
+			main.duration = lifetime;
+			_trails.enabled = false;
+			_trails.lifetime = .1f;
+			_trails.ratio = .1f;
+			_sizeoverlifetime.enabled = true;
+			//_trails.dieWithParticles = true;
+
+			emitParams.velocity = 0.75f * collisionSpeed * _sparkSystem.transform.forward;
+			emitParams.startLifetime = lifetime;
+			var emitcount = 0;
+		if (collisionSpeed < 5f)
+			{
+				emitcount = 1;
+			}
+			else
+			{
+				emitcount = (int)( collisionSpeed / 2);
+			}
+
+			if(sparksOn)
+				_sparkSystem.Emit(emitParams,emitcount);
 		}
 
 		public void DoCollision(Vector3 contactPoint, float collisionSpeed, bool doSpark)
@@ -276,12 +340,11 @@ namespace CollisionFXUpdated
 			if (_instantiated)
 			{
 				_sparkSystem.transform.position = contactPoint;
-				_sparkSystem.transform.Rotate(-transform.forward);
-				_sparkSystem.transform.Rotate(new Vector3(0, 1, 0), 20f);
+				_sparkSystem.transform.Rotate(transform.forward);
+				//_sparkSystem.transform.Rotate(new Vector3(0, 1, 0), 30f);
 				//_sparkSystem.transform.Translate(_sparkSystem.transform.up);
 
 				_contactPtLight.transform.position = contactPoint;
-
 
 				DoLights(doSpark);
 				DoSparks(doSpark, collisionSpeed);
@@ -289,7 +352,7 @@ namespace CollisionFXUpdated
 			}
 		}
 
-		#region 
+		#region Static Helpers
 		static ParticleSystem.MinMaxCurve GenerateSizeGrowCurve(float sizeGrow, float minTime, float maxTime)
 		{
 			const float step = 0.2f;
