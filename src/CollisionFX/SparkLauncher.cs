@@ -77,7 +77,7 @@ namespace CollisionFXUpdated
 
 					main.startColor = (Color)new Color32(255, 192, 98, 255);
 
-					main.gravityModifier = 1;
+					main.gravityModifier = 2;
 					// particles are released into the world
 					main.simulationSpace = ParticleSystemSimulationSpace.World;
 					// don't start on start
@@ -206,6 +206,7 @@ namespace CollisionFXUpdated
 					forceOverLifetime.y = Physics.gravity.y;
 					forceOverLifetime.z = Physics.gravity.z;
 					#endregion
+
 					_instantiated = true;
 
 					DoLights(false);
