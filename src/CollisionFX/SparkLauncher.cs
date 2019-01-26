@@ -116,7 +116,7 @@ namespace CollisionFXUpdated
 					//shape.arcSpread = 0;
 
 					var inheritVelocity = _sparkSystem.inheritVelocity;
-					inheritVelocity.enabled = true;
+					inheritVelocity.enabled = false;
 					inheritVelocity.mode = ParticleSystemInheritVelocityMode.Initial;
 					inheritVelocity.curveMultiplier = 0.75f;
 
@@ -235,6 +235,8 @@ namespace CollisionFXUpdated
 					#endregion
 
 					_instantiated = true;
+
+					DoLights(false);
 				}
 				catch (Exception ex)
 				{
@@ -314,6 +316,18 @@ namespace CollisionFXUpdated
 			_contactPtLight.intensity = Mathf.Clamp(collisionSpeed, .5f, 6f);
 			_particleLights.light.intensity = _contactPtLight.intensity;
 
+			ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams();
+			//emitParams.velocity = Mathf.Clamp(0.75f * collisionSpeed, 0.5f, 25f) *_sparkSystem.transform.forward;
+			main.startLifetime = lifetime;
+			main.duration = lifetime;
+			_trails.enabled = false;
+			_trails.lifetime = .1f;
+			_trails.ratio = .1f;
+			//_trails.dieWithParticles = true;
+
+			emitParams.velocity = 0.75f * collisionSpeed * _sparkSystem.transform.forward;
+			emitParams.startLifetime = lifetime;
+
 			var emitcount = 0;
 			if (collisionSpeed < 5f)
 			{
@@ -324,7 +338,7 @@ namespace CollisionFXUpdated
 				emitcount = (int)(collisionSpeed / 2);
 			}
 			if (sparksOn)
-				_sparkSystem.Emit(emitcount);
+				_sparkSystem.Emit(emitParams, emitcount);
 		}
 
 		public void DoCollision(Vector3 contactPoint, float collisionSpeed, bool doSpark)
