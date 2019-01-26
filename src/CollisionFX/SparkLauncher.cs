@@ -247,37 +247,20 @@ namespace CollisionFXUpdated
 
 		void Update()
 		{
-						//DoLights(transform.forward.magnitude > 5f);
-
 			// Check if we have reached beyond 2 seconds.
 			// Subtracting two is more accurate over time than resetting to zero.
 			if (timer > waitTime)
 			{
-				//_sparkSystem.Emit(UnityEngine.Random.Range(200, 1000));
 				if (Time.frameCount % 2 == 0)
 				{
 					if (!_sparkSystem.isEmitting)
 					{
 						DoLights(false);
-					}
-					//DoSparks(false);
-					//var emission = _sparkSystem.emission;
-					////if (_sparkSystem.isPlaying)
-					//if (_sparkSystem.isEmitting)
-					//{
-					//	emission.enabled = false;
-					//}
-					//else
-					//{
-					//	emission.enabled = true;
-					//}
-					
+					}		
 				}
 				// Remove the recorded 2 seconds.
 				timer = timer - waitTime;
 			}
-			//_sparkObj.transform.Rotate(new Vector3(0, 45, 0) * Time.deltaTime);
-			//_sparkObj.transform.Rotate(-transform.parent.transform.forward);
 		}
 
 		void OnDestroy()
@@ -290,34 +273,18 @@ namespace CollisionFXUpdated
 		private void DoLights(bool lightOn)
 		{
 			_contactPtLight.enabled = lightOn;
-			
-			//var light = _particleLights.light;
 			_particleLights.light.enabled = lightOn;
 		}
 
 		private void DoSparks(bool sparksOn, float collisionSpeed)
 		{
-			//var multiplier = 10f;
-			//int emitVal = (int)(collisionSpeed * 5f); 
-			//_emission.rateOverTime = collisionSpeed * 5f;
-			//_emission.enabled = sparksOn;
 			var lifetime = Mathf.Clamp(collisionSpeed, 0.1f, .5f);
 			var main = _sparkSystem.main;
-			_trails.enabled = false;
-			_trails.lifetime = .1f;
-			_trails.ratio = .1f;
-			//main.startSpeed = 1.0f;
-			//main.loop = true;
-			////collisionSpeed / multiplier;
-			////main.startSize = collisionSpeed / multiplier;
-			////_sizeoverlifetime.sizeMultiplier = collisionSpeed / multiplier;
-			//_sizeoverlifetime.enabled = false; ;
 
 			_contactPtLight.intensity = Mathf.Clamp(collisionSpeed, .5f, 6f);
 			_particleLights.light.intensity = _contactPtLight.intensity;
 
 			ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams();
-			//emitParams.velocity = Mathf.Clamp(0.75f * collisionSpeed, 0.5f, 25f) *_sparkSystem.transform.forward;
 			main.startLifetime = lifetime;
 			main.duration = lifetime;
 			_trails.enabled = false;
@@ -351,7 +318,6 @@ namespace CollisionFXUpdated
 
 				DoLights(doSpark);
 				DoSparks(doSpark, collisionSpeed);
-				//_sparkSystem.emit(5000);
 			}
 		}
 
