@@ -236,6 +236,8 @@ namespace CollisionFXUpdated
 					#endregion
 
 					_instantiated = true;
+
+					DoLights(false);
 				}
 				catch (Exception ex)
 				{
@@ -314,6 +316,8 @@ namespace CollisionFXUpdated
 
 			_contactPtLight.intensity = Mathf.Clamp(collisionSpeed, .5f, 6f);
 			_particleLights.light.intensity = _contactPtLight.intensity;
+			//emitParams.velocity = Mathf.Clamp(0.75f * collisionSpeed, 0.5f, 25f) *_sparkSystem.transform.forward;
+
 			ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams();
 			//emitParams.velocity = Mathf.Clamp(0.75f * collisionSpeed, 0.5f, 25f) *_sparkSystem.transform.forward;
 			main.startLifetime = lifetime;
@@ -335,9 +339,8 @@ namespace CollisionFXUpdated
 			{
 				emitcount = (int)(collisionSpeed / 2);
 			}
-
-			if(sparksOn)
-				_sparkSystem.Emit(emitParams,emitcount);
+			if (sparksOn)
+				_sparkSystem.Emit(emitParams, emitcount);
 		}
 
 		public void DoCollision(Vector3 contactPoint, float collisionSpeed, bool doSpark)
