@@ -221,6 +221,8 @@ namespace CollisionFXUpdated
 					//colorOverLifetime.color = grad2;
 					//trails.colorOverLifetime = grad;
 
+					#region gravity
+
 					var _externalforce = _sparkSystem.externalForces;
 					_externalforce.enabled = true;
 
@@ -231,7 +233,10 @@ namespace CollisionFXUpdated
 					forceOverLifetime.y = Physics.gravity.y;
 					forceOverLifetime.z = Physics.gravity.z;
 
+					#endregion
+
 					_instantiated = true;
+
 					DoLights(false);
 					DoSparks(false, 0);
 					//_sparkSystem.Play();11
@@ -307,6 +312,7 @@ namespace CollisionFXUpdated
 			////collisionSpeed / multiplier;
 			////main.startSize = collisionSpeed / multiplier;
 			////_sizeoverlifetime.sizeMultiplier = collisionSpeed / multiplier;
+			///
 			_contactPtLight.intensity = Mathf.Clamp(collisionSpeed, .5f, 6f);
 			_particleLights.light.intensity = _contactPtLight.intensity;
 			ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams();
@@ -333,6 +339,7 @@ namespace CollisionFXUpdated
 
 			if(sparksOn)
 				_sparkSystem.Emit(emitParams,emitcount);
+
 		}
 
 		public void DoCollision(Vector3 contactPoint, float collisionSpeed, bool doSpark)
