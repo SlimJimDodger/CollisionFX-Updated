@@ -323,7 +323,6 @@ namespace CollisionFXUpdated
 			_trails.enabled = false;
 			_trails.lifetime = .1f;
 			_trails.ratio = .1f;
-			_sizeoverlifetime.enabled = false;
 			//_trails.dieWithParticles = true;
 
 			emitParams.velocity = 0.75f * collisionSpeed * _sparkSystem.transform.forward;
@@ -336,7 +335,7 @@ namespace CollisionFXUpdated
 			}
 			else
 			{
-				emitcount = (int)( collisionSpeed / 2);
+				emitcount = (int)(collisionSpeed / 2);
 			}
 
 			if(sparksOn)
