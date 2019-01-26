@@ -155,7 +155,7 @@ namespace CollisionFXUpdated
 					collisions.mode = ParticleSystemCollisionMode.Collision3D;
 					collisions.type = ParticleSystemCollisionType.World;
 					collisions.dampen = 0.25f;
-					collisions.bounce = 0.2f;
+					collisions.bounce = 0.7f;
 					collisions.minKillSpeed = 0;
 					collisions.maxKillSpeed = 10000;
 					collisions.radiusScale = 1.0f;
@@ -166,8 +166,8 @@ namespace CollisionFXUpdated
 
 					var systemRender = _sparkSystem.GetComponent<ParticleSystemRenderer>();
 					systemRender.renderMode = ParticleSystemRenderMode.Billboard;
-					//systemRender.velocityScale = 1f;
-					//systemRender.lengthScale = 2f;
+					//systemRender.velocityScale = 1.2f;
+					//systemRender.lengthScale = 1.2f;
 					systemRender.material = _meshObj.GetComponent<Renderer>().material;// UnityEngine.Resources.Load("Effects/fx_exhaustSparks_flameout");
 					systemRender.trailMaterial = _meshObj.GetComponent<Renderer>().material;
 					//systemRender.minParticleSize;
