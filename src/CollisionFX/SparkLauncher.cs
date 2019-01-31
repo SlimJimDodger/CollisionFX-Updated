@@ -1,11 +1,11 @@
 ﻿//-------------------------------------------------------------
 // Collision FX-Updated
 // Author:    SlimJimDodger
-// Version:   0.8.1
+// Version:   0.8.2
 // Released:  2019-01-22
 // KSP:       v1.6.1
 
-// Thread:    http://forum.kerbalspaceprogram.com/
+// Thread:    https://forum.kerbalspaceprogram.com/index.php?/topic/181664-140-16x-collisionfx-updated-081/
 // Licence:   GNU v2, http://www.gnu.org/licenses/gpl-2.0.html
 // Source:    https://github.com/SlimJimdDodger/CollisionFX-Updated
 //-------------------------------------------------------------
@@ -88,16 +88,16 @@ namespace CollisionFXUpdated
 
 					 _emission = _sparkSystem.emission;
 					// how many per second / how much flow 
-					_emission.rateOverTime = 0f;
+					_emission.rateOverTime = 500f;
 					_emission.enabled = false;
 
 					#region shape
 					var shape = _sparkSystem.shape;
 					shape.enabled = true;
 
-					shape.shapeType = ParticleSystemShapeType.Sphere;
-					shape.radius = 0.1f;
-					shape.scale = Vector3.one;
+					//shape.shapeType = ParticleSystemShapeType.Sphere;
+					//shape.radius = 0.1f;
+					//shape.scale = Vector3.one;
 
 					//_meshObj = new GameObject();
 					//var meshRenderer = _sparkObj.GetComponent<MeshRenderer>();
@@ -108,13 +108,13 @@ namespace CollisionFXUpdated
 					//meshFilter.mesh = CreateSphere(null);
 					//shape.mesh = meshFilter.mesh;
 
-					//shape.shapeType = ParticleSystemShapeType.Cone;
-					//shape.angle = 20f;
-					//shape.radius = 0.01f;
-					//shape.radiusThickness = 1;
-					//shape.arc = 180f;
-					//shape.arcMode = ParticleSystemShapeMultiModeValue.Random;
-					//shape.arcSpread = 0;
+					shape.shapeType = ParticleSystemShapeType.Cone;
+					shape.angle = 20f;
+					shape.radius = 0.01f;
+					shape.radiusThickness = 1;
+					shape.arc = 180f;
+					shape.arcMode = ParticleSystemShapeMultiModeValue.Random;
+					shape.arcSpread = 0;
 					#endregion
 
 					var inheritVelocity = _sparkSystem.inheritVelocity;
@@ -134,7 +134,7 @@ namespace CollisionFXUpdated
 					float alpha = 1.0f;
 					var grad = new Gradient();
 					grad.SetKeys(
-						 new GradientColorKey[] { new GradientColorKey(new Color32(255, 244, 232, 255), 0.0f), new GradientColorKey(new Color32(255, 23, 23, 0), 0.3f), new GradientColorKey(new Color32(255, 23, 23, 0), 1.0f) },
+						 new GradientColorKey[] { new GradientColorKey(new Color32(255, 244, 232, 255), 0.0f), new GradientColorKey(new Color32(255, 100, 100, 0), 0.3f), new GradientColorKey(new Color32(255, 23, 23, 0), 1.0f) },
 						 new GradientAlphaKey[] { new GradientAlphaKey(1.0f, 0.0f), new GradientAlphaKey(1.0f, 0.5f), new GradientAlphaKey(alpha, 0.0f) }
 					);
 					colorOverLifetime.color = grad;
@@ -174,9 +174,9 @@ namespace CollisionFXUpdated
 					#endregion
 
 					var systemRender = _sparkSystem.GetComponent<ParticleSystemRenderer>();
-					systemRender.renderMode = ParticleSystemRenderMode.Stretch;
-					systemRender.velocityScale = 0.3f;
-					systemRender.lengthScale = 1.2f;
+					systemRender.renderMode = ParticleSystemRenderMode.Billboard;
+					//systemRender.velocityScale = 1f;
+					//systemRender.lengthScale = 2f;
 					systemRender.material = _meshObj.GetComponent<Renderer>().material;// UnityEngine.Resources.Load("Effects/fx_exhaustSparks_flameout");
 					systemRender.trailMaterial = _meshObj.GetComponent<Renderer>().material;
 					//systemRender.minParticleSize;
@@ -289,7 +289,7 @@ namespace CollisionFXUpdated
 
 		private void DoSparks(bool sparksOn, float collisionSpeed)
 		{
-			var lifetime = Mathf.Clamp(collisionSpeed, 0.1f, 1f);
+			var lifetime = Mathf.Clamp(collisionSpeed, 0.01f, .5f);
 			var main = _sparkSystem.main;
 
 			_contactPtLight.range = Mathf.Clamp(collisionSpeed, 0.01f, 0.5f);
@@ -300,7 +300,7 @@ namespace CollisionFXUpdated
 			main.startLifetime = lifetime;
 			main.duration = lifetime;
 
-			var startSize = 0.15f;
+			var startSize = 0.1f;
 			var animCurve = new AnimationCurve();
 			animCurve.AddKey(0.01f, startSize);
 			animCurve.AddKey(lifetime, 0.0f);
@@ -308,12 +308,12 @@ namespace CollisionFXUpdated
 			_sizeoverlifetime.size = minmax;
 			main.startSize = startSize;
 
-			_trails.enabled = true;
-			_trails.lifetime = .1f;
-			_trails.ratio = .1f;
+			_trails.enabled = false;
+			_trails.lifetime = lifetime /2;
+			_trails.ratio = 1f;
 			//_trails.dieWithParticles = true;
 
-			emitParams.velocity = 0.75f * collisionSpeed * _sparkSystem.transform.forward;
+			emitParams.velocity = 1.25f * collisionSpeed * _sparkSystem.transform.forward;
 			emitParams.startLifetime = lifetime;
 
 			var emitcount = 0;
@@ -325,8 +325,13 @@ namespace CollisionFXUpdated
 			{
 				emitcount = (int)(collisionSpeed / 2);
 			}
+
 			if (sparksOn)
+			{
+				Log.WriteLog(String.Format("Sparking: {0} sparks", emitcount));
+				DumpObject();
 				_sparkSystem.Emit(emitParams, emitcount);
+			}
 		}
 
 		public void DoCollision(Vector3 contactPoint, float collisionSpeed, bool doSpark)
@@ -341,6 +346,11 @@ namespace CollisionFXUpdated
 				DoLights(doSpark);
 				DoSparks(doSpark, collisionSpeed);
 			}
+		}
+
+		private void DumpObject()
+		{
+			Log.WriteLog("dump");
 		}
 
 		#region Static Helpers
