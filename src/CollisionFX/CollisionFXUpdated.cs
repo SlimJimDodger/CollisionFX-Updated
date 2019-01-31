@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using UnityEngine;
 using ModuleWheels;
 
@@ -25,6 +26,11 @@ namespace CollisionFXUpdated
 	public class CollisionFX : PartModule
 	{
 		public static string ConfigPath = "GameData/CollisionFXUpdated/settings.cfg";
+		private static readonly string _assemblyPath = Path.GetDirectoryName(typeof(CollisionFX).Assembly.Location);
+		internal static String SettingsFile { get; } = Path.Combine(_assemblyPath, "pSettings.cfg");
+		internal static String LogFile { get; } = Path.Combine(_assemblyPath, "cfx.log");
+
+		public static string AssemblyPath => _assemblyPath;
 
 		#region KSPFields
 
@@ -72,6 +78,7 @@ namespace CollisionFXUpdated
 		private bool wheelHasWeight;
 		private bool _paused = false;
 		private SparkLauncher _sparklauncher = null;
+		private bool _soundInstantiated = false;
 
 #if DEBUG
 		private GameObject[] spheres = new GameObject[4];
@@ -94,6 +101,7 @@ namespace CollisionFXUpdated
 
 		public override void OnStart(StartState state)
 		{
+			Log.InitLog();
 			if (state == StartState.Editor || state == StartState.None) return;
 
 			SetupParticles();
@@ -108,6 +116,8 @@ namespace CollisionFXUpdated
 				wheelCollider = moduleWheel.wheelColliderHost.GetComponent<WheelCollider>();
 				InvokeRepeating("checkLanding", 0f, 0.5f);
 			}
+
+			part.GetComponent<AudioBehaviour>().enabled = true; ;
 
 			SetupAudio();
 
@@ -341,6 +351,7 @@ namespace CollisionFXUpdated
 		/// </summary>
 		public void ImpactSounds(bool isWheel)
 		{
+			if (!_soundInstantiated) SetupAudio();
 			if (isWheel && WheelImpactSound != null && WheelImpactSound.audio != null)
 			{
 				WheelImpactSound.audio.pitch = UnityEngine.Random.Range(1 - pitchRange, 1 + pitchRange);
@@ -494,6 +505,7 @@ namespace CollisionFXUpdated
 				WheelImpactSound.audio.loop = false;
 				WheelImpactSound.audio.volume = GameSettings.SHIP_VOLUME;
 			}
+			_soundInstantiated = true;
 		}
 
 		public void Update()
@@ -509,7 +521,6 @@ namespace CollisionFXUpdated
 
 			if (moduleWheel.isGrounded && !wheelHasWeight && part.vessel.srfSpeed > 10)
 			{
-
 				ImpactSounds(true);
 				WheelHit hit;
 				if (wheelCollider.GetGroundHit(out hit))
@@ -803,6 +814,7 @@ namespace CollisionFXUpdated
 
 		private void ScrapeSound(FXGroup sound, float speed)
 		{
+			if (!_soundInstantiated) SetupAudio();
 			if (sound == null || sound.audio == null)
 				return;
 			if (speed > minScrapeSpeed)

@@ -48,6 +48,7 @@
     <Compile Include="CollisionFXUpdated.cs" />
     <Compile Include="ColourManager.cs" />
     <Compile Include="EvaWatcher.cs" />
+    <Compile Include="Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SparkLauncher.cs" />
     <Compile Include="Utils.cs" />
