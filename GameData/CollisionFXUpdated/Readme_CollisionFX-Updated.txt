@@ -1,20 +1,14 @@
 -------------------------------------------------------------
  Collision FX-Updated 
  Author:    SlimJimDodger
- Version:   0.8.2
+ Version:   0.8.3
  Released:  2019-02-01
  KSP:       v1.6.1
 
- Thread:    http://forum.kerbalspaceprogram.com/
+ Thread:    https://forum.kerbalspaceprogram.com/index.php?/topic/181664-140-16x-collisionfx-updated-083/
  Licence:   GNU v2, http://www.gnu.org/licenses/gpl-2.0.html
  Source:    https://github.com/SlimJimdDodger/CollisionFX-Updated
 -------------------------------------------------------------
-
-
-
-
-
-
 
 -------------------------------------------------------------
  Collision FX
@@ -74,7 +68,7 @@ Version history
 ---------------
 0.8.3 (2019-02-01)
 - attach to parent Rigidbody
-- turn no StretchedBillboard
+- turn on StretchedBillboard
 - turn fields back on to enable sound
 - performance gains
 
