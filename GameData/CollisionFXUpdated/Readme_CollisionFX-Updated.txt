@@ -46,8 +46,6 @@ Uninstallation
 --------------
 Delete the CollisionFX folder inside GameData.
 
-
-
 ******* no config options as of 5.0 **********
 Configuration options
 ---------------------
@@ -74,6 +72,12 @@ RoadNoise.wav - Modified from "Tires car without an engine." by petruchio_ru, av
 
 Version history
 ---------------
+0.8.3 (2019-02-01)
+- attach to parent Rigidbody
+- turn no StretchedBillboard
+- turn fields back on to enable sound
+- performance gains
+
 0.8.2 (2019-02-01)
 - turn off trailers, mainly due to spark positioning
 - audio should play

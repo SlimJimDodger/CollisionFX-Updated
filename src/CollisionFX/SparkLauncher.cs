@@ -55,13 +55,18 @@ namespace CollisionFXUpdated
 			_sparkObj.transform.Rotate(-this.transform.parent.transform.forward);
 
 			// _rigidBody = _sparkObj.AddComponent<Rigidbody>();
-			_rigidBody = this.transform.parent.gameObject.AddComponent<Rigidbody>();
-			_rigidBody.useGravity = true;
-			_rigidBody.transform.parent = _sparkObj.transform.parent;
+			var transformParent = this.transform.parent;
+			Part part = transform.parent.GetComponentInParent<Part>();
+			
+			//_rigidBody = part.GetComponent<Rigidbody>();//.GetComponentInParent<Rigidbody>();
+			//if(_rigidBody = null)
+			//	part.RigidBodyPart.ri
+			//_rigidBody.useGravity = true;
+			//_rigidBody.transform.parent = _sparkObj.transform.parent;
 
 			_sparkSystem = new ParticleSystem();
 			_sparkSystem = _sparkObj.AddComponent<ParticleSystem>();
-			_sparkSystem.transform.parent = _rigidBody.transform;
+			//_sparkSystem.transform.parent = _rigidBody.transform;
 
 			if (_sparkSystem == null)
 			{
@@ -103,9 +108,9 @@ namespace CollisionFXUpdated
 					var shape = _sparkSystem.shape;
 					shape.enabled = true;
 
-					//shape.shapeType = ParticleSystemShapeType.Sphere;
-					//shape.radius = 0.1f;
-					//shape.scale = Vector3.one;
+					shape.shapeType = ParticleSystemShapeType.Sphere;
+					shape.radius = 0.1f;
+					shape.scale = Vector3.one;
 
 					//_meshObj = new GameObject();
 					//var meshRenderer = _sparkObj.GetComponent<MeshRenderer>();
@@ -116,13 +121,13 @@ namespace CollisionFXUpdated
 					//meshFilter.mesh = CreateSphere(null);
 					//shape.mesh = meshFilter.mesh;
 
-					shape.shapeType = ParticleSystemShapeType.Cone;
-					shape.angle = 20f;
-					shape.radius = 0.01f;
-					shape.radiusThickness = 1;
-					shape.arc = 180f;
-					shape.arcMode = ParticleSystemShapeMultiModeValue.Random;
-					shape.arcSpread = 0;
+					//shape.shapeType = ParticleSystemShapeType.Cone;
+					//shape.angle = 20f;
+					//shape.radius = 0.01f;
+					//shape.radiusThickness = 1;
+					//shape.arc = 180f;
+					//shape.arcMode = ParticleSystemShapeMultiModeValue.Random;
+					//shape.arcSpread = 0;
 					#endregion
 
 					var inheritVelocity = _sparkSystem.inheritVelocity;
@@ -182,9 +187,9 @@ namespace CollisionFXUpdated
 					#endregion
 
 					var systemRender = _sparkSystem.GetComponent<ParticleSystemRenderer>();
-					systemRender.renderMode = ParticleSystemRenderMode.Billboard;
-					//systemRender.velocityScale = 1f;
-					//systemRender.lengthScale = 2f;
+					systemRender.renderMode = ParticleSystemRenderMode.Stretch;
+					systemRender.velocityScale = .1f;
+					systemRender.lengthScale = 1f;
 
 					//string path = Path.Combine(typeof(CollisionFX).Assembly.Location, "spark.png");
 					//byte[] fileData = File.ReadAllBytes(path);
@@ -305,7 +310,7 @@ namespace CollisionFXUpdated
 
 		private void DoSparks(bool sparksOn, float collisionSpeed)
 		{
-			var lifetime = Mathf.Clamp(collisionSpeed / 10, .1f, 2f);
+			var lifetime = Mathf.Clamp(collisionSpeed / 10, .3f, 2f);
 			var main = _sparkSystem.main;
 
 			_contactPtLight.range = Mathf.Clamp(lifetime, 0.01f, 0.5f);
@@ -326,7 +331,7 @@ namespace CollisionFXUpdated
 			_trails.ratio = .3f;
 			//_trails.dieWithParticles = true;
 
-			_emitParams.velocity = -1.25f * collisionSpeed * _rigidBody.transform.forward;
+			_emitParams.velocity = 1.25f * collisionSpeed * _rigidBody.transform.forward;
 			_emitParams.startLifetime = lifetime;
 
 			var emitcount = 0;
@@ -349,10 +354,16 @@ namespace CollisionFXUpdated
 			}
 		}
 
-		public void DoCollision(Vector3 contactPoint, float collisionSpeed, bool doSpark)
+		public void DoCollision(Rigidbody rigidbody, Vector3 contactPoint, float collisionSpeed, bool doSpark)
 		{
 			if (_instantiated)
 			{
+				if (_rigidBody == null)
+				{
+					_rigidBody = rigidbody;
+					_sparkSystem.transform.parent = _rigidBody.transform;
+					_rigidBody.useGravity = true;
+				}
 				_contactPtLight.transform.position = contactPoint;
 				_sparkSystem.transform.position = contactPoint;
 				_sparkSystem.transform.Rotate(_rigidBody.transform.forward);
