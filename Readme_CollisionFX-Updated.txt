@@ -68,7 +68,7 @@ Version history
 ---------------
 0.8.3 (2019-02-01)
 - attach to parent Rigidbody
-- turn no StretchedBillboard
+- turn on StretchedBillboard
 - turn fields back on to enable sound
 - performance gains
 
