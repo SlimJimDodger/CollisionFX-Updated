@@ -322,11 +322,10 @@ namespace CollisionFXUpdated
 			//main.startSize = startSize;
 
 			_trails.enabled = false;
-			_trails.lifetime = lifetime /2;
-			_trails.ratio = 1f;
+			_trails.lifetime = lifetime /4 ;
+			_trails.ratio = .3f;
 			//_trails.dieWithParticles = true;
 
-			//emitParams.velocity = 1.25f * collisionSpeed * _sparkSystem.transform.forward;
 			_emitParams.velocity = -1.25f * collisionSpeed * _rigidBody.transform.forward;
 			_emitParams.startLifetime = lifetime;
 
