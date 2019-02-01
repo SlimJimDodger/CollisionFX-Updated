@@ -1,8 +1,8 @@
 -------------------------------------------------------------
  Collision FX-Updated 
  Author:    SlimJimDodger
- Version:   0.8.1
- Released:  2019-01-22
+ Version:   0.8.2
+ Released:  2019-02-01
  KSP:       v1.6.1
 
  Thread:    http://forum.kerbalspaceprogram.com/
@@ -74,6 +74,12 @@ RoadNoise.wav - Modified from "Tires car without an engine." by petruchio_ru, av
 
 Version history
 ---------------
+0.8.2 (2019-02-01)
+- turn off trailers, mainly due to spark positioning
+- audio should play
+- better lifetime adjustment
+- shouldn't kill performance
+
 0.8.1 (2019-01-26)
 - implemented trailers 
 - more code cleanup in sparks

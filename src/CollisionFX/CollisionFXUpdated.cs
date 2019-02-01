@@ -34,19 +34,19 @@ namespace CollisionFXUpdated
 
 		#region KSPFields
 
-		//[KSPField]
+		[KSPField]
 		public float volume = 1f;
-		//[KSPField]
+		[KSPField]
 		public bool scrapeSparks = true;
-		//[KSPField]
+		[KSPField]
 		public string collisionSound = String.Empty;
-		//[KSPField]
+		[KSPField]
 		public string wheelImpactSound = String.Empty;
-		//[KSPField]
+		[KSPField]
 		public string scrapeSound = String.Empty;
-		//[KSPField]
+		[KSPField]
 		public string sparkSound = String.Empty;
-		//[KSPField]
+		[KSPField]
 		public float sparkLightIntensity = 0.05f;
 		//[KSPField]
 		//public float minScrapeSpeed = 0.3f;
@@ -589,7 +589,7 @@ namespace CollisionFXUpdated
 			if (_sparkFX != null)
 				_sparkFX.transform.LookAt(collidedWithTransform);
 
-			ScrapeParticles(relativeVelocity, position, colliderName, collidedWith);
+			ScrapeParticles(part, relativeVelocity, position, colliderName, collidedWith);
 			ScrapeSound(ScrapeSounds, relativeVelocity);
 
 			if (CanSpark(colliderName, collidedWith))
@@ -679,7 +679,7 @@ namespace CollisionFXUpdated
 				 FlightGlobals.currentMainBody.atmosphereContainsOxygen && !Utils.IsPQS(colliderName);
 		}
 
-		private void ScrapeParticles(float speed, Vector3 contactPoint, string colliderName, GameObject collidedWith)
+		private void ScrapeParticles(Part part, float speed, Vector3 contactPoint, string colliderName, GameObject collidedWith)
 		{
 			if (speed > minScrapeSpeed)
 			{
@@ -687,11 +687,12 @@ namespace CollisionFXUpdated
 				{
 					if (CanSpark(colliderName, collidedWith) && FlightGlobals.ActiveVessel.atmDensity > 0 && FlightGlobals.currentMainBody.atmosphereContainsOxygen)
 					{
-						_sparklauncher.DoCollision(contactPoint, (float)speed, true);
+						_sparklauncher.DoCollision(part.Rigidbody, contactPoint, (float)speed, true);
 					}
 					else
 					{
-						_sparklauncher.DoCollision(contactPoint, (float)speed, false);
+						_sparklauncher.DoCollision(part.Rigidbody, contactPoint, (float)speed, false);
+						
 						/*fragmentFx.transform.position = contactPoint;
 						fragmentFx.particleEmitter.maxEnergy = speed / 10;                          // Values determined
 						fragmentFx.particleEmitter.maxEmission = Mathf.Clamp((speed * 2), 0, 75);   // via experimentation.
