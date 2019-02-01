@@ -2,7 +2,7 @@ CollisionFX
 ===========
 Collision FX adds sound, light and particle effects when colliding or scraping your craft. 
 
-Resurrected from the original: 
+Resurrected from the original:  https://github.com/pizzaoverhead/CollisionFX
 Version history
 ---------------
 0.8.3 (2019-02-01)
