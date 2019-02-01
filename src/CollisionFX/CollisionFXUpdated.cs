@@ -34,22 +34,23 @@ namespace CollisionFXUpdated
 
 		#region KSPFields
 
-		[KSPField]
-		public float volume = 0.5f;
-		[KSPField]
+		//[KSPField]
+		public float volume = 1f;
+		//[KSPField]
 		public bool scrapeSparks = true;
-		[KSPField]
+		//[KSPField]
 		public string collisionSound = String.Empty;
-		[KSPField]
+		//[KSPField]
 		public string wheelImpactSound = String.Empty;
-		[KSPField]
+		//[KSPField]
 		public string scrapeSound = String.Empty;
-		[KSPField]
+		//[KSPField]
 		public string sparkSound = String.Empty;
-		[KSPField]
+		//[KSPField]
 		public float sparkLightIntensity = 0.05f;
-		[KSPField]
-		public float minScrapeSpeed = 0.3f;
+		//[KSPField]
+		//public float minScrapeSpeed = 0.3f;
+		public float minScrapeSpeed = 0.9f;
 
 		#endregion
 
@@ -137,6 +138,7 @@ namespace CollisionFXUpdated
 				spheres[3].GetComponent<Renderer>().material.color = Color.yellow;
 			}
 #endif
+			//_sparklauncher = gameObject.AddComponent<SparkLauncher>();
 		}
 
 		private void OnPause()
@@ -249,9 +251,10 @@ namespace CollisionFXUpdated
 				Part collidingPart = GetCollidingPart(contactPoint);
 				if (collidingPart != null)
 				{
-					CollisionFX cfx = collidingPart.GetComponent<CollisionFX>();
-					if (cfx != null)
-						cfx.StopScrapeLightSound();
+					//CollisionFX cfx = collidingPart.GetComponent<CollisionFX>();
+					//if (cfx != null)
+						StopScrapeLightSound();
+					_sparklauncher.ExitCollision();
 				}
 			}
 		}
@@ -263,7 +266,7 @@ namespace CollisionFXUpdated
 			if (scrapeSparks)
 			{
 				_sparkFX = new GameObject("SparkFX");
-				_sparkFX =  (GameObject)GameObject.Instantiate(UnityEngine.Resources.Load("Effects/fx_exhaustSparks_flameout"));
+				//_sparkFX =  (GameObject)GameObject.Instantiate(UnityEngine.Resources.Load("Effects/fx_exhaustSparks_flameout"));
 
 				_sparkFX.transform.parent = part.transform;
 				_sparkFX.transform.position = part.transform.position;
@@ -432,11 +435,13 @@ namespace CollisionFXUpdated
 					Debug.LogError("[CollisionFX] SparkSounds was null");
 					return;
 				}
+				part.GetComponent<AudioBehaviour>().enabled = true;
 				if (!String.IsNullOrEmpty(sparkSound))
 				{
 					part.fxGroups.Add(SparkSounds);
 					SparkSounds.name = "SparkSounds";
 					SparkSounds.audio = gameObject.AddComponent<AudioSource>();
+					SparkSounds.audio.enabled = true;
 					SparkSounds.audio.clip = GameDatabase.Instance.GetAudioClip(sparkSound);
 					if (SparkSounds.audio.clip == null)
 					{
@@ -463,6 +468,7 @@ namespace CollisionFXUpdated
 				part.fxGroups.Add(ScrapeSounds);
 				ScrapeSounds.name = "ScrapeSounds";
 				ScrapeSounds.audio = gameObject.AddComponent<AudioSource>();
+				ScrapeSounds.audio.enabled = true;
 				ScrapeSounds.audio.clip = GameDatabase.Instance.GetAudioClip(scrapeSound);
 				if (ScrapeSounds.audio.clip == null)
 				{
@@ -484,6 +490,7 @@ namespace CollisionFXUpdated
 				part.fxGroups.Add(BangSound);
 				BangSound.name = "BangSound";
 				BangSound.audio = gameObject.AddComponent<AudioSource>();
+				BangSound.audio.enabled = true;
 				BangSound.audio.clip = GameDatabase.Instance.GetAudioClip(collisionSound);
 				BangSound.audio.dopplerLevel = 0f;
 				BangSound.audio.rolloffMode = AudioRolloffMode.Logarithmic;
@@ -498,6 +505,7 @@ namespace CollisionFXUpdated
 				part.fxGroups.Add(WheelImpactSound);
 				WheelImpactSound.name = "WheelImpactSound";
 				WheelImpactSound.audio = gameObject.AddComponent<AudioSource>();
+				WheelImpactSound.audio.enabled = true;
 				WheelImpactSound.audio.clip = GameDatabase.Instance.GetAudioClip(wheelImpactSound);
 				WheelImpactSound.audio.dopplerLevel = 0f;
 				WheelImpactSound.audio.rolloffMode = AudioRolloffMode.Logarithmic;
@@ -578,8 +586,8 @@ namespace CollisionFXUpdated
 				}
 			}
 
-			if (sparkFx != null)
-				sparkFx.transform.LookAt(collidedWithTransform);
+			if (_sparkFX != null)
+				_sparkFX.transform.LookAt(collidedWithTransform);
 
 			ScrapeParticles(relativeVelocity, position, colliderName, collidedWith);
 			ScrapeSound(ScrapeSounds, relativeVelocity);

@@ -11,6 +11,7 @@
 //-------------------------------------------------------------
 
 using System;
+using System.IO;
 using UnityEngine;
 
 namespace CollisionFXUpdated
@@ -32,22 +33,29 @@ namespace CollisionFXUpdated
 		private float waitTime = 0.5f;
 		private float timer = 0.0f;
 		private bool _instantiated = false;
-		
-		public SparkLauncher sparkLauncher;
+
+		public SparkLauncher Launcher { get => this; }
+		private float _startSize = 0.25f;
+		private ParticleSystem.EmitParams _emitParams = new ParticleSystem.EmitParams();
 
 		#region Events
+
+		// TODO: unity minmax curve script manual shows cool things
 
 		void Start()
 		{
 			_lightObj = new GameObject("cfx_light");
 			_meshObj = (GameObject)GameObject.Instantiate(UnityEngine.Resources.Load("Effects/fx_exhaustFlare_yellow"));
+			//_meshObj = (GameObject)GameObject.Instantiate(UnityEngine.Resources.Load(Path.Combine(typeof(CollisionFX).Assembly.Location, "spark.png")));
+			
 			//_sparkSystem = _sparkObj.GetComponent<ParticleSystem>();
 
-			_sparkObj = new GameObject("sparks4u");
+			_sparkObj = new GameObject("sparks4u");			
 			_sparkObj.transform.parent = this.transform.parent;
 			_sparkObj.transform.Rotate(-this.transform.parent.transform.forward);
 
-			_rigidBody = _sparkObj.AddComponent<Rigidbody>();
+			// _rigidBody = _sparkObj.AddComponent<Rigidbody>();
+			_rigidBody = this.transform.parent.gameObject.AddComponent<Rigidbody>();
 			_rigidBody.useGravity = true;
 			_rigidBody.transform.parent = _sparkObj.transform.parent;
 
@@ -72,9 +80,9 @@ namespace CollisionFXUpdated
 					// time of particle, die when reach 0
 					main.startLifetime = 2f;
 					// starting size of particle
-					main.startSize = new ParticleSystem.MinMaxCurve(0.1f, 0.4f);
-					
+					main.startSize = new ParticleSystem.MinMaxCurve(0.1f, 0.25f);
 					main.startSpeed = 1f;
+
 
 					main.startColor = (Color)new Color32(255, 192, 98, 255);
 
@@ -162,11 +170,11 @@ namespace CollisionFXUpdated
 					collisions.enabled = true;
 					collisions.mode = ParticleSystemCollisionMode.Collision3D;
 					collisions.type = ParticleSystemCollisionType.World;
-					collisions.dampen = 0.25f;
+					collisions.dampen = 0.1f;
 					collisions.bounce = 0.7f;
-					collisions.minKillSpeed = 0;
-					collisions.maxKillSpeed = 10000;
-					collisions.radiusScale = 1.0f;
+					collisions.minKillSpeed = 1;
+					collisions.maxKillSpeed = 1000;
+					collisions.radiusScale = .25f;
 					collisions.quality = ParticleSystemCollisionQuality.High;
 					collisions.collidesWith = 1;
 					collisions.maxCollisionShapes = 256;
@@ -177,7 +185,14 @@ namespace CollisionFXUpdated
 					systemRender.renderMode = ParticleSystemRenderMode.Billboard;
 					//systemRender.velocityScale = 1f;
 					//systemRender.lengthScale = 2f;
+
+					//string path = Path.Combine(typeof(CollisionFX).Assembly.Location, "spark.png");
+					//byte[] fileData = File.ReadAllBytes(path);
+					//Texture2D tex = new Texture2D(64, 64);
+					//tex.LoadImage(fileData); //..this will auto-resize the texture dimensions.
+					
 					systemRender.material = _meshObj.GetComponent<Renderer>().material;// UnityEngine.Resources.Load("Effects/fx_exhaustSparks_flameout");
+					//systemRender.material.mainTexture = tex;
 					systemRender.trailMaterial = _meshObj.GetComponent<Renderer>().material;
 					//systemRender.minParticleSize;
 					//systemRender.maxParticleSize;
@@ -187,10 +202,10 @@ namespace CollisionFXUpdated
 					//_lightObj.transform.parent = transform;
 					var light = _lightObj.AddComponent<Light>();
 					light.type = LightType.Point;
-					light.range = .01f;
+					light.range = .1f;
 					light.intensity = 2f;
 					light.color = new Color32(255, 157, 82, 255);
-					light.enabled = false;
+					light.enabled = true;
 					light.renderMode = LightRenderMode.ForcePixel;
 
 					_particleLights = _sparkSystem.lights;
@@ -205,8 +220,8 @@ namespace CollisionFXUpdated
 					_contactPtLight = _sparkObj.AddComponent<Light>();
 					_contactPtLight.transform.parent = _sparkObj.transform;
 					_contactPtLight.type = LightType.Point;
-					_contactPtLight.range = 0.5f;
-					_contactPtLight.intensity = 6f;
+					_contactPtLight.range = 0.1f;
+					_contactPtLight.intensity = 2f;
 					_contactPtLight.color = new Color32(255, 153, 0, 255);
 					_contactPtLight.enabled = true;
 					#endregion
@@ -264,10 +279,10 @@ namespace CollisionFXUpdated
 			{
 				if (Time.frameCount % 2 == 0)
 				{
-					if (!_sparkSystem.isEmitting)
+					if (!_sparkSystem.isEmitting || _rigidBody.velocity.magnitude < 1)
 					{
 						DoLights(false);
-					}		
+					}
 				}
 				// Remove the recorded 2 seconds.
 				timer = timer - waitTime;
@@ -285,52 +300,53 @@ namespace CollisionFXUpdated
 		{
 			_contactPtLight.enabled = lightOn;
 			_particleLights.light.enabled = lightOn;
+			_particleLights.enabled = lightOn;
 		}
 
 		private void DoSparks(bool sparksOn, float collisionSpeed)
 		{
-			var lifetime = Mathf.Clamp(collisionSpeed, 0.01f, .5f);
+			var lifetime = Mathf.Clamp(collisionSpeed / 10, .1f, 2f);
 			var main = _sparkSystem.main;
 
-			_contactPtLight.range = Mathf.Clamp(collisionSpeed, 0.01f, 0.5f);
-			_contactPtLight.intensity = Mathf.Clamp(collisionSpeed, .5f, 6f);
+			_contactPtLight.range = Mathf.Clamp(lifetime, 0.01f, 0.5f);
+			_contactPtLight.intensity = Mathf.Clamp(collisionSpeed, .5f, 3f);
 			_particleLights.light.intensity = _contactPtLight.intensity;
 
-			ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams();
 			main.startLifetime = lifetime;
 			main.duration = lifetime;
-
-			var startSize = 0.1f;
+			
 			var animCurve = new AnimationCurve();
-			animCurve.AddKey(0.01f, startSize);
+			animCurve.AddKey(0.0f, _startSize);
 			animCurve.AddKey(lifetime, 0.0f);
-			var minmax = new ParticleSystem.MinMaxCurve(1, animCurve);
-			_sizeoverlifetime.size = minmax;
-			main.startSize = startSize;
+			_sizeoverlifetime.size = new ParticleSystem.MinMaxCurve(1, animCurve); ;
+			//main.startSize = startSize;
 
 			_trails.enabled = false;
 			_trails.lifetime = lifetime /2;
 			_trails.ratio = 1f;
 			//_trails.dieWithParticles = true;
 
-			emitParams.velocity = 1.25f * collisionSpeed * _sparkSystem.transform.forward;
-			emitParams.startLifetime = lifetime;
+			//emitParams.velocity = 1.25f * collisionSpeed * _sparkSystem.transform.forward;
+			_emitParams.velocity = -1.25f * collisionSpeed * _rigidBody.transform.forward;
+			_emitParams.startLifetime = lifetime;
 
 			var emitcount = 0;
-			if (collisionSpeed < 5f)
-			{
-				emitcount = 1;
-			}
-			else
-			{
-				emitcount = (int)(collisionSpeed / 2);
-			}
+			//if (collisionSpeed < 5f)
+			//{
+			//	emitcount = 1;  // this is too small
+			//}
+			//else
+			//{
+			//	emitcount = (int)(collisionSpeed / 2);
+			//}
 
-			if (sparksOn)
+			emitcount = (int)Mathf.Clamp(collisionSpeed, 5f, 80f);
+
+			if (sparksOn && !_sparkSystem.isEmitting)
 			{
-				Log.WriteLog(String.Format("Sparking: {0} sparks", emitcount));
-				DumpObject();
-				_sparkSystem.Emit(emitParams, emitcount);
+				//Log.WriteLog(String.Format("Sparking: {0} sparks", emitcount));
+				//DumpObject(_emitParams, collisionSpeed);
+				_sparkSystem.Emit(_emitParams, emitcount);
 			}
 		}
 
@@ -340,7 +356,8 @@ namespace CollisionFXUpdated
 			{
 				_contactPtLight.transform.position = contactPoint;
 				_sparkSystem.transform.position = contactPoint;
-				_sparkSystem.transform.Rotate(transform.forward);
+				_sparkSystem.transform.Rotate(_rigidBody.transform.forward);
+				_sparkSystem.transform.LookAt(_rigidBody.transform);
 				//_sparkSystem.transform.Rotate(30f, 0f, 0f);
 
 				DoLights(doSpark);
@@ -348,9 +365,31 @@ namespace CollisionFXUpdated
 			}
 		}
 
-		private void DumpObject()
+		public void ExitCollision()
 		{
-			Log.WriteLog("dump");
+			DoLights(false);
+		}
+
+		private void DumpObject(ParticleSystem.EmitParams emitParams, float collisionSpeed)
+		{
+			var main = _sparkSystem.main;
+
+			Log.WriteLog("\n*>*>*>*>*>*>*>*>");
+			Log.WriteLog(String.Format("Duration: {0}", main.duration));
+			Log.WriteLog(String.Format("Loop: {0}", main.loop));
+			Log.WriteLog(String.Format("StartLifetime: {0}", MinMaxToString(main.startLifetime)));
+			Log.WriteLog(String.Format("StartSize: {0}", MinMaxToString(main.startSize)));
+			Log.WriteLog(String.Format("Ship Velocity: {0}", _sparkSystem.transform.forward));
+			Log.WriteLog(String.Format("Velocity: {0}", MinMaxToString(main.startSpeed)));
+			Log.WriteLog(String.Format("Velocity (P): {0}", emitParams.velocity));
+			Log.WriteLog(String.Format("RigidBody Velocity: {0}", _rigidBody.velocity.ToString()));
+			Log.WriteLog(String.Format("CollisionSpeed: {0}", collisionSpeed));
+			Log.WriteLog("*<*<*<*<*<*<*<\n");
+		}
+
+		private string MinMaxToString(ParticleSystem.MinMaxCurve curve)
+		{
+			return string.Format("min {0} max {1}", curve.constantMin, curve.constantMax);
 		}
 
 		#region Static Helpers
