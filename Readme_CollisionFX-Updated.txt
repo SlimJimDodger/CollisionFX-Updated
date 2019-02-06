@@ -1,7 +1,7 @@
 -------------------------------------------------------------
  Collision FX-Updated 
  Author:    SlimJimDodger
- Version:   0.8.3
+ Version:   0.8.3.1
  Released:  2019-02-01
  KSP:       v1.6.1
 
@@ -66,6 +66,9 @@ RoadNoise.wav - Modified from "Tires car without an engine." by petruchio_ru, av
 
 Version history
 ---------------
+0.8.3.1 (2019-02-07)
+- fix most occurences of parts that won't stop singing
+
 0.8.3 (2019-02-01)
 - attach to parent Rigidbody
 - turn on StretchedBillboard

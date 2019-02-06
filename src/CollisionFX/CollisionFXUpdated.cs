@@ -248,14 +248,14 @@ namespace CollisionFXUpdated
 			StopScrapeLightSound();
 			foreach (ContactPoint contactPoint in c.contacts)
 			{
-				Part collidingPart = GetCollidingPart(contactPoint);
-				if (collidingPart != null)
-				{
+				//Part collidingPart = GetCollidingPart(contactPoint);
+				//if (collidingPart != null)
+				//{
 					//CollisionFX cfx = collidingPart.GetComponent<CollisionFX>();
 					//if (cfx != null)
 						StopScrapeLightSound();
-					_sparklauncher.ExitCollision();
-				}
+						_sparklauncher.ExitCollision();
+				// }
 			}
 		}
 
